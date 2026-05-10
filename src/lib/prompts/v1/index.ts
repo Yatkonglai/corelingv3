@@ -1,25 +1,26 @@
-import { PromptLanguage, PromptVersion } from './types';
+import { PromptLanguage, PromptVersion, ConversationPhase } from './types';
 import { buildCoreIdentity } from './core';
 import { buildDesignerDNA } from './dna';
 import { buildWorkflow } from './workflow';
 import { buildExamples } from './examples';
 import { buildContract } from './contracts';
 import { buildRealityConstraints } from './constraints';
+import { buildCompetitionCriteria } from './competitions';
 
 /**
  * GEMMA ARTISTE Prompt System
- * Version: 1.1.0
+ * Version: 1.2.0
  *
- * Added High Jewelry Reality Constraint Layer in v1.1.0.
+ * Added Competition Criteria Data Module + Prompt Compression in v1.2.0.
  * Each module is a pure function. The assembler composes them
- * into the final system instruction.
+ * into the final system instruction based on conversation phase.
  */
 
 export const VERSION: PromptVersion = {
   major: 1,
-  minor: 1,
+  minor: 2,
   patch: 0,
-  label: 'reality-constraint-layer',
+  label: 'competition-criteria-compression',
 };
 
 export function getVersionString(): string {
@@ -27,19 +28,101 @@ export function getVersionString(): string {
 }
 
 /**
+ * Phase-aware module selection for prompt compression.
+ * Reduces token usage by ~20-35% depending on phase.
+ */
+const PHASE_MODULES: Record<ConversationPhase, {
+  core: boolean;
+  constraints: boolean;
+  designerDNA: boolean;
+  competitions: boolean;
+  workflow: boolean;
+  examples: boolean;
+  contract: boolean;
+  competitionCompressed: boolean;
+}> = {
+  consultation: {
+    core: true,
+    constraints: false,      // skip heavy constraints during Q&A
+    designerDNA: false,      // skip during Q&A
+    competitions: true,
+    workflow: false,         // skip full workflow
+    examples: false,         // skip examples during Q&A
+    contract: false,         // skip contract during Q&A
+    competitionCompressed: true,
+  },
+  'scheme-generation': {
+    core: true,
+    constraints: true,       // full constraints for generation
+    designerDNA: true,
+    competitions: true,
+    workflow: true,
+    examples: true,
+    contract: true,
+    competitionCompressed: false,
+  },
+  refinement: {
+    core: false,             // skip identity re-introduction
+    constraints: true,       // keep constraints for corrections
+    designerDNA: false,      // skip during refinement
+    competitions: true,
+    workflow: false,         // skip full workflow during refinement
+    examples: false,
+    contract: true,
+    competitionCompressed: true,
+  },
+  'image-generation': {
+    core: false,
+    constraints: true,       // keep constraints for image consistency
+    designerDNA: false,
+    competitions: false,
+    workflow: false,
+    examples: false,
+    contract: false,
+    competitionCompressed: false,
+  },
+};
+
+/**
  * Assembles the complete system instruction.
  * @param lang - Target language for the prompt
+ * @param phase - Conversation phase for dynamic module loading (default: scheme-generation)
  * @returns The full system instruction string
  */
-export function buildSystemInstruction(lang: PromptLanguage): string {
-  const sections = [
-    buildCoreIdentity(lang),
-    buildRealityConstraints(lang),
-    buildDesignerDNA(),
-    buildWorkflow(lang),
-    buildExamples(lang),
-    buildContract(lang),
-  ];
+export function buildSystemInstruction(
+  lang: PromptLanguage,
+  phase: ConversationPhase = 'scheme-generation'
+): string {
+  const modules = PHASE_MODULES[phase];
+  const sections: string[] = [];
+
+  if (modules.core) {
+    sections.push(buildCoreIdentity(lang));
+  }
+
+  if (modules.constraints) {
+    sections.push(buildRealityConstraints(lang));
+  }
+
+  if (modules.designerDNA) {
+    sections.push(buildDesignerDNA());
+  }
+
+  if (modules.competitions) {
+    sections.push(buildCompetitionCriteria(lang, modules.competitionCompressed));
+  }
+
+  if (modules.workflow) {
+    sections.push(buildWorkflow(lang));
+  }
+
+  if (modules.examples) {
+    sections.push(buildExamples(lang));
+  }
+
+  if (modules.contract) {
+    sections.push(buildContract(lang));
+  }
 
   return sections.join('\n\n---\n\n');
 }

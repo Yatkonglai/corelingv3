@@ -4,6 +4,7 @@ import { buildSystemInstruction } from '@/lib/prompts/v1';
 import { MODEL_PRESETS, DEFAULT_MODE, CHAT_TIMEOUT_MS, RETRY_CONFIG } from '@/lib/ai/config';
 import { withRetryAndTimeout } from '@/lib/ai/retry';
 import type { GenerationMode } from '@/lib/ai/config';
+import type { ConversationPhase } from '@/lib/prompts/v1';
 
 function getAI() {
   const apiKey = process.env.GEMINI_API_KEY || '';
@@ -15,6 +16,39 @@ interface ChatRequest {
   message: string;
   language: 'en' | 'zh';
   mode?: GenerationMode;
+}
+
+/**
+ * Detect conversation phase based on history length and content.
+ * This enables dynamic prompt compression to reduce token usage.
+ */
+function detectPhase(history: Array<{ role: 'user' | 'model'; text: string }>, currentMessage: string): ConversationPhase {
+  const totalMessages = history.length;
+
+  // Image generation keywords
+  const imageKeywords = ['图', 'image', 'picture', 'render', 'visual', '照片', '效果图', '生成图'];
+  const isImageRequest = imageKeywords.some((kw) => currentMessage.toLowerCase().includes(kw.toLowerCase()));
+  if (isImageRequest) {
+    return 'image-generation';
+  }
+
+  // Consultation: first 1-2 rounds (lightweight prompt)
+  if (totalMessages <= 2) {
+    return 'consultation';
+  }
+
+  // Refinement: if history contains scheme markers and user is asking follow-up
+  const hasSchemes = history.some((msg) =>
+    msg.role === 'model' && (/Scheme [A-C]/i.test(msg.text) || /方案 [A-C]/i.test(msg.text))
+  );
+  const refinementKeywords = ['改', '修改', '调整', 'refine', 'adjust', 'change', 'alter', '优化', 'optimize', '再', 'another'];
+  const isRefinement = hasSchemes && refinementKeywords.some((kw) => currentMessage.toLowerCase().includes(kw.toLowerCase()));
+  if (isRefinement) {
+    return 'refinement';
+  }
+
+  // Default: full scheme generation mode
+  return 'scheme-generation';
 }
 
 export async function POST(request: NextRequest) {
@@ -38,8 +72,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const phase = detectPhase(history, message);
     const preset = MODEL_PRESETS[mode];
-    const systemInstruction = buildSystemInstruction(language);
+    const systemInstruction = buildSystemInstruction(language, phase);
 
     // Convert history to Gemini format
     const geminiHistory = history.map((msg) => ({
@@ -58,9 +93,6 @@ export async function POST(request: NextRequest) {
           history: geminiHistory,
         });
 
-        // Note: Google GenAI SDK doesn't directly support AbortSignal on sendMessage.
-        // We rely on the AbortController in withRetryAndTimeout for timeout handling.
-        // If the SDK adds signal support in the future, pass it here.
         const response: GenerateContentResponse = await chat.sendMessage({
           message,
         });
@@ -76,14 +108,13 @@ export async function POST(request: NextRequest) {
     );
 
     const duration = Date.now() - startTime;
-    console.log(`[AI Gateway] chat | mode=${mode} | temp=${preset.temperature} | duration=${duration}ms | success`);
+    console.log(`[AI Gateway] chat | mode=${mode} | phase=${phase} | temp=${preset.temperature} | duration=${duration}ms | success`);
 
     return NextResponse.json({ text: result });
   } catch (error: any) {
     const duration = Date.now() - startTime;
 
     if (error.code) {
-      // Already normalized error from withRetryAndTimeout
       console.error(`[AI Gateway] chat | mode=${error.mode || 'unknown'} | duration=${duration}ms | error=${error.code}`);
 
       const statusMap: Record<string, number> = {
@@ -103,7 +134,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Unexpected error
     console.error(`[AI Gateway] chat | duration=${duration}ms | unexpected_error:`, error);
     return NextResponse.json(
       { error: { code: 'unknown', message: 'An unexpected server error occurred.' } },

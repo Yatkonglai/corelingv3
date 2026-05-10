@@ -1,11 +1,16 @@
 import { PromptLanguage } from './types';
+import { getCompetitionNames } from './competitions';
 
 /**
  * Workflow Module
  * Step-by-step process for scheme generation.
+ * Updated v1.2.0: Competition Fit now references structured criteria.
  */
 
-const WORKFLOW_EN = `## Workflow
+export function buildWorkflow(lang: PromptLanguage): string {
+  const compNames = getCompetitionNames(lang);
+
+  const WORKFLOW_EN = `## Workflow
 
 ### Step 1: Consultation
 Begin by understanding the user's vision. Ask clarifying questions about:
@@ -14,6 +19,7 @@ Begin by understanding the user's vision. Ask clarifying questions about:
 - **Materials**: Preferred gems, metals, alternative materials
 - **Set Composition**: Single piece or coordinated set (necklace + earrings + ring)
 - **Occasion**: Competition entry, private commission, or concept exploration
+- **Target Competition** (if known): Which of these competitions is the user targeting? ${compNames}
 
 ### Step 2: Scheme Generation
 Propose 2-3 distinct design schemes (Variant A, B, C) based on the user's input.
@@ -30,7 +36,7 @@ Use exactly this format:
 3. **Structural Description** — The metal framework, silhouette, negative space strategy, line weights
 4. **Key Materials** — Gems (with specific ct limits), metals, techniques
 5. **Wearability Note** — Weight estimate, comfort considerations, balance
-6. **Competition Fit** — Which competition criteria does this hit?
+6. **Competition Fit** — Which specific competition(s) does this scheme target? Reference the CRITERIA names (not just competition names) and explain which criteria the design scores highest on. Example: "Strong for AGTA Spectrum — Gemstone Use & Appreciation (30%) through micro-pavé ruby setting; Craftsmanship & Technique (25%) via invisible titanium setting."
 
 **CRITICAL: Before presenting each scheme, run this self-check:**
 - [ ] Does the metal structure read as the protagonist? (Not the gemstone)
@@ -38,6 +44,7 @@ Use exactly this format:
 - [ ] Is the center stone ≤25% of visual weight?
 - [ ] Are all dimensions within wearable limits?
 - [ ] Would this piece look plausible in a real auction catalog?
+- [ ] Does the Competition Fit reference specific criteria with weights?
 
 **After all schemes**, include a comparison table:
 
@@ -47,6 +54,7 @@ Use exactly this format:
 | Technical Innovation | ... | ... | ... |
 | Wearability | ... | ... | ... |
 | Competition Appeal | ... | ... | ... |
+| Target Competition | ... | ... | ... |
 
 ### Step 3: Hidden Image Prompts (Auto-Generated, Not User-Visible)
 After ALL visible content (schemes + comparison table), you MUST append a hidden metadata block.
@@ -82,7 +90,7 @@ After ALL visible content (schemes + comparison table), you MUST append a hidden
 9. Must NOT contain any markdown formatting inside the prompt string
 10. Must be a single paragraph of raw text`;
 
-const WORKFLOW_ZH = `## 工作流程
+  const WORKFLOW_ZH = `## 工作流程
 
 ### 步骤 1：咨询
 首先理解用户的愿景。通过以下方面提出澄清问题：
@@ -91,6 +99,7 @@ const WORKFLOW_ZH = `## 工作流程
 - **材质**：偏好的宝石、金属、替代材料
 - **套装构成**：单件还是协调套装（项链+耳环+戒指）
 - **场合**：竞赛投稿、私人定制还是概念探索
+- **目标竞赛**（如已知）：用户瞄准以下哪些竞赛？${compNames}
 
 ### 步骤 2：方案生成
 基于用户输入提出 2-3 个不同的设计方案（方案 A、B、C）。
@@ -107,7 +116,7 @@ const WORKFLOW_ZH = `## 工作流程
 3. **结构描述** — 金属框架、轮廓、负空间策略、线条粗细
 4. **关键材质** — 宝石（带具体ct限制）、金属、工艺
 5. **佩戴性说明** — 重量估算、舒适度考量、平衡性
-6. **竞赛契合度** — 符合哪些竞赛评审标准？
+6. **竞赛契合度** — 此方案瞄准哪些具体竞赛？引用**标准名称**（而非仅竞赛名称）并解释设计在哪些标准上得分最高。示例："AGTA Spectrum 表现强劲——通过微镶红宝石镶嵌在宝石运用与鉴赏（30%）得分高；通过隐形钛金属镶嵌在工艺与技法（25%）得分高。"
 
 **关键：在呈现每个方案前，运行此自检：**
 - [ ] 金属结构是否呈现为主角？（而非宝石）
@@ -115,6 +124,7 @@ const WORKFLOW_ZH = `## 工作流程
 - [ ] 主石是否≤视觉重量的25%？
 - [ ] 所有尺寸是否在佩戴限制内？
 - [ ] 这件作品在真实拍卖目录中是否看起来合理？
+- [ ] 竞赛契合度是否引用了带权重的具体标准？
 
 **所有方案之后**，包含对比表格：
 
@@ -124,6 +134,7 @@ const WORKFLOW_ZH = `## 工作流程
 | 技术创新 | ... | ... | ... |
 | 佩戴性 | ... | ... | ... |
 | 竞赛吸引力 | ... | ... | ... |
+| 目标竞赛 | ... | ... | ... |
 
 ### 步骤 3：隐藏图片提示词（自动生成，不对用户可见）
 在所有可见内容（方案+对比表格）之后，你必须附加一个隐藏元数据块。
@@ -159,6 +170,5 @@ const WORKFLOW_ZH = `## 工作流程
 9. 提示词字符串内部不得包含任何 markdown 格式
 10. 必须是单段纯文本`;
 
-export function buildWorkflow(lang: PromptLanguage): string {
   return lang === 'zh' ? WORKFLOW_ZH : WORKFLOW_EN;
 }
