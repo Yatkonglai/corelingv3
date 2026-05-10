@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"npx getdesign@latest add --help 2>&1\",\"timeout\":30000,\"description\":\"查看 getdesign add 命令帮助\"}",
+  "error": "Exit code 1\nError: Unknown brand: --help\nAvailable brands: airbnb, airtable, apple, binance, bmw, bmw-m, bugatti, cal, claude, clay, clickhouse, cohere, coinbase, composio, cursor, elevenlabs, expo, ferrari, figma, framer, hashicorp, hp, ibm, intercom, kraken, lamborghini, linear.app, lovable, mastercard, meta, minimax, mintlify, miro, mistral.ai, mongodb, nike, notion, nvidia, ollama, opencode.ai, pinterest, playstation, posthog, raycast, renault, replicate, resend, revolut, runwayml, sanity, s...",
+  "timestamp": "2026-05-10T14:26:33.754Z",
+  "retry_count": 1
+}

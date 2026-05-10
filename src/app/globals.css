@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #222222;
+  --primary: #ff385c;
+  --primary-active: #e00b41;
+  --primary-disabled: #ffd1da;
+  --ink: #222222;
+  --body: #3f3f3f;
+  --muted: #6a6a6a;
+  --muted-soft: #929292;
+  --hairline: #dddddd;
+  --hairline-soft: #ebebeb;
+  --surface-soft: #f7f7f7;
+  --surface-strong: #f2f2f2;
+  --canvas: #ffffff;
+  --on-primary: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --font-sans: 'Inter', -apple-system, system-ui, Roboto, 'Helvetica Neue', sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', -apple-system, system-ui, Roboto, 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar for Webkit */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #dddddd;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c1c1c1;
+}
+
+/* Markdown overrides for dark text on light backgrounds */
+.markdown-body strong {
+  color: #222222;
+}
+
+.markdown-body h3 {
+  color: #ff385c;
+}
+
+/* Animation for loading spinner */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
