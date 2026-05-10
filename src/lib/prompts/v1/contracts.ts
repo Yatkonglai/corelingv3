@@ -20,6 +20,7 @@ You MUST follow these rules. Violations degrade product quality.
 8. **Gemstone Proportion Check**: Before finalizing any scheme, verify that no single gemstone exceeds 25% of visual weight. If it does, reduce it.
 9. **Negative Space Verification**: Every scheme must explicitly mention negative space ratio (target ≥50%).
 10. **Structure-First Language**: Describe the metal structure BEFORE describing gemstones. The metal is the protagonist.
+11. **Hidden Metadata Block**: After ALL visible content, you MUST append a \`\`\`json coreling_meta\`\`\` block containing imagePrompts for each scheme. This block is hidden from users but critical for the system.
 
 ### Forbidden Behavior
 - Do NOT generate more than 3 schemes in one response.
@@ -30,7 +31,8 @@ You MUST follow these rules. Violations degrade product quality.
 - Do NOT propose center stones >3ct for necklaces, >1ct for earrings, >2ct for rings, >2.5ct for brooches.
 - Do NOT describe gemstones as "floating", "hovering", or without visible setting mechanics.
 - Do NOT create perfect mirror symmetry — dynamic asymmetry is required.
-- Do NOT use "8k resolution", "cinematic lighting", "hyper-realistic", or similar CGI terminology in design descriptions.`;
+- Do NOT use "8k resolution", "cinematic lighting", "hyper-realistic", or similar CGI terminology in design descriptions.
+- Do NOT omit the \`coreling_meta\` block — it is mandatory.`;
 
 const CONTRACT_ZH = `## 输出契约
 
@@ -47,6 +49,7 @@ const CONTRACT_ZH = `## 输出契约
 8. **宝石比例检查**：在定稿任何方案前，验证没有任何单颗宝石超过视觉重量的25%。如果超过，必须缩小。
 9. **负空间验证**：每个方案必须明确提及负空间比例（目标≥50%）。
 10. **结构优先语言**：在描述宝石之前先描述金属结构。金属是主角。
+11. **隐藏元数据块**：在所有可见内容之后，必须附加一个 \`\`\`json coreling_meta\`\`\` 块，包含每个方案的 imagePrompt。此块对用户隐藏，但对系统至关重要。
 
 ### 禁止行为
 - 不要在一次回复中生成超过 3 个方案。
@@ -57,7 +60,8 @@ const CONTRACT_ZH = `## 输出契约
 - 不要提议项链主石>3ct、耳环主石>1ct、戒指主石>2ct、胸针主石>2.5ct。
 - 不要将宝石描述为"漂浮"、"悬浮"或无可见镶嵌机制。
 - 不要创造完美镜像对称——需要动态不对称。
-- 不要在设计描述中使用"8k分辨率"、"电影级光线"、"超写实"或类似CGI术语。`;
+- 不要在设计描述中使用"8k分辨率"、"电影级光线"、"超写实"或类似CGI术语。
+- 不要省略 \`coreling_meta\` 块——它是强制性的。`;
 
 export function buildContract(lang: PromptLanguage): string {
   const template = lang === 'zh' ? CONTRACT_ZH : CONTRACT_EN;

@@ -10,6 +10,7 @@ export interface Message {
   timestamp: number;
   imageUrl?: string;
   isGenerating?: boolean;
+  meta?: SchemeMeta;
 }
 
 export type Language = 'en' | 'zh';
@@ -31,4 +32,13 @@ export interface Translation {
 export interface SchemeSelection {
   schemeId: string;
   description: string;
+}
+
+export interface SchemeMeta {
+  version: string;
+  schemes: Array<{
+    id: string;
+    title: string;
+    imagePrompt: string;
+  }>;
 }

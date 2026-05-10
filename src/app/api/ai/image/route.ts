@@ -13,6 +13,7 @@ interface ImageRequest {
   designDescription: string;
   targetScheme?: string;
   language?: 'en' | 'zh';
+  prompt?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -27,44 +28,51 @@ export async function POST(request: NextRequest) {
     }
 
     const body: ImageRequest = await request.json();
-    const { designDescription, targetScheme, language = 'en' } = body;
+    const { designDescription, targetScheme, language = 'en', prompt } = body;
 
-    if (!designDescription?.trim()) {
+    if (!designDescription?.trim() && !prompt?.trim()) {
       return NextResponse.json(
-        { error: { code: 'bad_request', message: 'Design description is required.' } },
+        { error: { code: 'bad_request', message: 'Design description or prompt is required.' } },
         { status: 400 }
       );
     }
 
-    // Round 1: Optimize prompt using text model
-    const optimizationPrompt = buildImageOptimizationPrompt(designDescription, targetScheme, language);
+    let finalPrompt: string;
 
-    const optimizedPrompt = await withRetryAndTimeout(
-      async () => {
-        const response = await getAI().models.generateContent({
-          model: 'gemini-flash-latest',
-          contents: optimizationPrompt,
-          config: {
-            temperature: IMAGE_PROMPT_PRESET.temperature,
-          },
-        });
-        return response.text?.trim() || designDescription;
-      },
-      {
-        maxAttempts: RETRY_CONFIG.maxAttempts,
-        baseDelayMs: RETRY_CONFIG.baseDelayMs,
-        maxDelayMs: RETRY_CONFIG.maxDelayMs,
-        timeoutMs: IMAGE_TIMEOUT_MS,
-      }
-    );
+    if (prompt && prompt.trim()) {
+      // Single-round: use pre-generated imagePrompt directly
+      finalPrompt = prompt.trim();
+    } else {
+      // Fallback: two-round optimization (legacy flow)
+      const optimizationPrompt = buildImageOptimizationPrompt(designDescription, targetScheme, language);
 
-    // Round 2: Generate image
+      finalPrompt = await withRetryAndTimeout(
+        async () => {
+          const response = await getAI().models.generateContent({
+            model: 'gemini-flash-latest',
+            contents: optimizationPrompt,
+            config: {
+              temperature: IMAGE_PROMPT_PRESET.temperature,
+            },
+          });
+          return response.text?.trim() || designDescription;
+        },
+        {
+          maxAttempts: RETRY_CONFIG.maxAttempts,
+          baseDelayMs: RETRY_CONFIG.baseDelayMs,
+          maxDelayMs: RETRY_CONFIG.maxDelayMs,
+          timeoutMs: IMAGE_TIMEOUT_MS,
+        }
+      );
+    }
+
+    // Generate image
     const imageUrl = await withRetryAndTimeout(
       async () => {
         const response = await getAI().models.generateContent({
           model: 'gemini-2.5-flash-image',
           contents: {
-            parts: [{ text: optimizedPrompt }],
+            parts: [{ text: finalPrompt }],
           },
           config: {},
         });
@@ -90,7 +98,7 @@ export async function POST(request: NextRequest) {
     );
 
     const duration = Date.now() - startTime;
-    console.log(`[AI Gateway] image | scheme=${targetScheme || 'general'} | duration=${duration}ms | success`);
+    console.log(`[AI Gateway] image | scheme=${targetScheme || 'general'} | singleRound=${!!prompt} | duration=${duration}ms | success`);
 
     return NextResponse.json({ imageUrl });
   } catch (error: any) {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Send, Globe, Trash2, Sparkles, Gem, Wand2, Compass } from "lucide-react";
-import { Message, Role, Language } from "../lib/types";
+import { Message, Role, Language, SchemeMeta } from "../lib/types";
 import { TRANSLATIONS } from "../lib/constants";
 import { sendMessageToGemini, generateJewelryImage } from "../lib/geminiService";
 import type { GenerationMode } from "../lib/ai/config";
@@ -63,6 +63,29 @@ export default function Home() {
     setMode((prev) => (prev === "artisan" ? "muse" : "artisan"));
   };
 
+  /**
+   * Parse coreling_meta JSON block from AI response.
+   * Extracts hidden imagePrompts for each scheme.
+   */
+  const parseCorelingMeta = (text: string): SchemeMeta | undefined => {
+    try {
+      const metaMatch = text.match(/```json coreling_meta\n([\s\S]*?)\n```/);
+      if (!metaMatch) return undefined;
+
+      const meta: SchemeMeta = JSON.parse(metaMatch[1]);
+      if (!meta.schemes || !Array.isArray(meta.schemes)) return undefined;
+
+      // Validate each scheme has required fields
+      meta.schemes = meta.schemes.filter(
+        (s) => s.id && s.title && s.imagePrompt
+      );
+
+      return meta.schemes.length > 0 ? meta : undefined;
+    } catch {
+      return undefined;
+    }
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -79,8 +102,6 @@ export default function Home() {
     setLoadingText(t.generating);
 
     try {
-      // FIX: Pass messages (without the new userMsg) as history.
-      // The new message is sent separately to avoid duplication.
       const responseText = await sendMessageToGemini(
         messages,
         userMsg.text,
@@ -88,11 +109,14 @@ export default function Home() {
         mode
       );
 
+      const meta = parseCorelingMeta(responseText);
+
       const aiMsg: Message = {
         id: uuidv4(),
         role: Role.MODEL,
         text: responseText,
         timestamp: Date.now(),
+        meta,
       };
 
       setMessages((prev) => [...prev, aiMsg]);
@@ -151,7 +175,8 @@ export default function Home() {
 
   const handleGenerateImage = async (
     sourceText: string,
-    schemeName?: string
+    schemeName?: string,
+    imagePrompt?: string
   ) => {
     if (isLoading) return;
 
@@ -172,7 +197,7 @@ export default function Home() {
     setMessages((prev) => [...prev, statusMsg]);
 
     try {
-      const imageUrl = await generateJewelryImage(sourceText, schemeName);
+      const imageUrl = await generateJewelryImage(sourceText, schemeName, imagePrompt);
 
       setMessages((prev) =>
         prev.map((msg) => {

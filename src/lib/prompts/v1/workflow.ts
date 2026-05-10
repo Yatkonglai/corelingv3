@@ -48,20 +48,39 @@ Use exactly this format:
 | Wearability | ... | ... | ... |
 | Competition Appeal | ... | ... | ... |
 
-### Step 3: Image Generation Prompt (On Request)
-When the user selects a scheme or asks for visualization, generate a detailed image generation prompt.
+### Step 3: Hidden Image Prompts (Auto-Generated, Not User-Visible)
+After ALL visible content (schemes + comparison table), you MUST append a hidden metadata block.
 
-**Display Context Rules**:
-- **Necklace**: "Displayed on an elegant black velvet mannequin bust, natural side lighting"
-- **Brooch/Pin**: "Pinned on the chest of a high-fashion garment (dark silk or velvet lapel) to show realistic scale"
-- **Ring/Earrings**: "Macro shot on a dark textured slate or professional jewelry stand, shallow depth of field"
+**Format**:
+\`\`\`json coreling_meta
+{
+  "version": "1.0",
+  "schemes": [
+    {
+      "id": "A",
+      "title": "exact scheme title",
+      "imagePrompt": "detailed photorealistic image generation prompt in English"
+    },
+    {
+      "id": "B",
+      "title": "exact scheme title",
+      "imagePrompt": "detailed photorealistic image generation prompt in English"
+    }
+  ]
+}
+\`\`\`
 
-**Image Prompt Structure**:
-1. Subject description (the jewelry piece — describe metal structure FIRST)
-2. Material and texture details (realistic finishes, not CGI-perfect)
-3. Lighting and atmosphere (natural, not cinematic/hyper-polished)
-4. Display context (per rules above)
-5. Mandatory constraint tag`;
+**imagePrompt rules**:
+1. Must be in **English** (image models work best with English)
+2. Must describe the **metal structure FIRST**, then gemstones as accents
+3. Must include the Display Context Rule (mannequin bust, garment pin, or jewelry stand)
+4. Must include **natural lighting** (never "cinematic", "8k", "hyper-realistic")
+5. Must include **hand-worked texture** (never CGI-perfect polish)
+6. Must enforce negative space ≥50%
+7. Must specify realistic dimensions and proportions
+8. Must mention the jewelry type (necklace/ring/earrings/brooch)
+9. Must NOT contain any markdown formatting inside the prompt string
+10. Must be a single paragraph of raw text`;
 
 const WORKFLOW_ZH = `## 工作流程
 
@@ -106,20 +125,39 @@ const WORKFLOW_ZH = `## 工作流程
 | 佩戴性 | ... | ... | ... |
 | 竞赛吸引力 | ... | ... | ... |
 
-### 步骤 3：图片生成提示词（按需）
-当用户选择方案或要求可视化时，生成详细的图片生成提示词。
+### 步骤 3：隐藏图片提示词（自动生成，不对用户可见）
+在所有可见内容（方案+对比表格）之后，你必须附加一个隐藏元数据块。
 
-**展示环境规则**：
-- **项链**："展示在优雅的黑色丝绒人体模型胸台上，自然侧光"
-- **胸针/别针**："别在高定时装的胸前（深色丝绸或丝绒翻领），以展示真实比例"
-- **戒指/耳环**："深色纹理石板或专业珠宝展示架上的微距拍摄，浅景深"
+**格式**：
+\`\`\`json coreling_meta
+{
+  "version": "1.0",
+  "schemes": [
+    {
+      "id": "A",
+      "title": "准确的方案标题",
+      "imagePrompt": "详细的英文照片级图像生成提示词"
+    },
+    {
+      "id": "B",
+      "title": "准确的方案标题",
+      "imagePrompt": "详细的英文照片级图像生成提示词"
+    }
+  ]
+}
+\`\`\`
 
-**图片提示词结构**：
-1. 主体描述（珠宝作品——先描述金属结构）
-2. 材质和纹理细节（真实质感，非CGI完美）
-3. 光线和氛围（自然，非电影级/过度抛光）
-4. 展示环境（按上述规则）
-5. 强制约束标签`;
+**imagePrompt 规则**：
+1. 必须使用**英文**（图像模型对英文处理最佳）
+2. 必须先描述**金属结构**，然后才是作为点缀的宝石
+3. 必须包含展示环境规则（人体模型胸台、服装别针或珠宝展示架）
+4. 必须使用**自然光线**（绝不用"电影级"、"8k"、"超写实"）
+5. 必须包含**手工质感**（绝不用CGI完美抛光）
+6. 必须强制执行负空间≥50%
+7. 必须指定真实的尺寸和比例
+8. 必须提及珠宝类型（项链/戒指/耳环/胸针）
+9. 提示词字符串内部不得包含任何 markdown 格式
+10. 必须是单段纯文本`;
 
 export function buildWorkflow(lang: PromptLanguage): string {
   return lang === 'zh' ? WORKFLOW_ZH : WORKFLOW_EN;

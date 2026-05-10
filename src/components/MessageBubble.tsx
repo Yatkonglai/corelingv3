@@ -8,7 +8,7 @@ import remarkGfm from 'remark-gfm';
 interface MessageBubbleProps {
   message: Message;
   translations: Translation;
-  onGenerateImage: (text: string, schemeName?: string) => void;
+  onGenerateImage: (text: string, schemeName?: string, imagePrompt?: string) => void;
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({ message, translations, onGenerateImage }) => {
@@ -19,6 +19,17 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, translations, on
   const uniqueSchemes = [...new Set(schemesFound)];
 
   const canGenerate = !isUser && message.text.length > 50 && !message.isGenerating && !message.imageUrl;
+
+  // Helper: get imagePrompt for a scheme from meta
+  const getImagePrompt = (schemeName: string): string | undefined => {
+    if (!message.meta?.schemes) return undefined;
+    // Extract scheme ID (e.g., "Scheme A" -> "A")
+    const match = schemeName.match(/[A-Z0-9]+/);
+    if (!match) return undefined;
+    const schemeId = match[0];
+    const scheme = message.meta.schemes.find(s => s.id === schemeId);
+    return scheme?.imagePrompt;
+  };
 
   return (
     <div className={`flex w-full mb-6 ${isUser ? 'justify-end' : 'justify-start'}`}>
@@ -84,7 +95,10 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, translations, on
                 uniqueSchemes.map((scheme) => (
                    <button
                     key={scheme}
-                    onClick={() => onGenerateImage(message.text, scheme)}
+                    onClick={() => {
+                      const imagePrompt = getImagePrompt(scheme);
+                      onGenerateImage(message.text, scheme, imagePrompt);
+                    }}
                     className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-[#f7f7f7] text-[#ff385c] rounded-full text-xs font-medium transition-all border border-[#ebebeb] shadow-sm hover:shadow-md hover:border-[#ff385c]"
                   >
                     <Palette size={14} />

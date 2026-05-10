@@ -37,10 +37,14 @@ export const sendMessageToGemini = async (
 /**
  * Generates an image via the AI Gateway.
  * The actual Gemini SDK call is handled server-side at /api/ai/image.
+ * @param designDescription - The design text (fallback if prompt is not provided)
+ * @param targetScheme - Optional scheme name
+ * @param prompt - Optional pre-generated image prompt (single-round mode)
  */
 export const generateJewelryImage = async (
   designDescription: string,
-  targetScheme?: string
+  targetScheme?: string,
+  prompt?: string
 ): Promise<string> => {
   // Detect language from the design description
   const isChinese = /[一-鿿]/.test(designDescription);
@@ -53,6 +57,7 @@ export const generateJewelryImage = async (
       designDescription,
       targetScheme,
       language: lang,
+      prompt,
     }),
   });
 
