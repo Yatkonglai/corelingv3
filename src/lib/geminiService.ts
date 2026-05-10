@@ -1,115 +1,66 @@
-"use client";
-
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-import { buildSystemInstruction, buildImageOptimizationPrompt } from "./prompts/v1";
-import { Message, Role } from "./types";
-
-const apiKey = typeof window !== "undefined"
-  ? (process.env.NEXT_PUBLIC_GEMINI_API_KEY || "")
-  : "";
-
-const ai = new GoogleGenAI({ apiKey });
+import { Message } from "./types";
+import type { GenerationMode } from "./ai/config";
 
 /**
- * Sends a chat message to the Gemini model.
- * Uses the structured prompt architecture (v1.0.0).
+ * Sends a chat message to the AI Gateway.
+ * The actual Gemini SDK call is handled server-side at /api/ai/chat.
  */
 export const sendMessageToGemini = async (
   history: Message[],
   newMessage: string,
-  language: string
+  language: string,
+  mode: GenerationMode = "artisan"
 ): Promise<string> => {
-  try {
-    if (!apiKey) throw new Error("API Key missing");
+  const response = await fetch("/api/ai/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      history: history.map((msg) => ({
+        role: msg.role,
+        text: msg.text,
+      })),
+      message: newMessage,
+      language,
+      mode,
+    }),
+  });
 
-    const modelId = "gemini-flash-latest";
+  const data = await response.json();
 
-    // Convert internal message format to Gemini format
-    const relevantHistory = history.map(msg => ({
-      role: msg.role === Role.USER ? 'user' as const : 'model' as const,
-      parts: [{ text: msg.text }]
-    }));
-
-    // Build the system instruction from the structured prompt architecture
-    const systemInstruction = buildSystemInstruction(language as 'en' | 'zh');
-
-    const chat = ai.chats.create({
-      model: modelId,
-      config: {
-        systemInstruction,
-        temperature: 0.7,
-      },
-      history: relevantHistory
-    });
-
-    const result: GenerateContentResponse = await chat.sendMessage({
-      message: newMessage
-    });
-
-    return result.text || "";
-  } catch (error) {
-    console.error("Gemini Chat Error:", error);
-    throw error;
+  if (!response.ok || data.error) {
+    throw data.error || { code: "unknown", message: "Request failed." };
   }
+
+  return data.text || "";
 };
 
 /**
- * Generates an image based on a design description.
- * Uses the structured image prompt builder.
+ * Generates an image via the AI Gateway.
+ * The actual Gemini SDK call is handled server-side at /api/ai/image.
  */
 export const generateJewelryImage = async (
   designDescription: string,
   targetScheme?: string
 ): Promise<string> => {
-  try {
-    if (!apiKey) throw new Error("API Key missing");
+  // Detect language from the design description
+  const isChinese = /[一-鿿]/.test(designDescription);
+  const lang: "en" | "zh" = isChinese ? "zh" : "en";
 
-    // Detect language from the design description
-    const isChinese = /[一-鿿]/.test(designDescription);
-    const lang: 'en' | 'zh' = isChinese ? 'zh' : 'en';
-
-    // Build the optimization prompt using the structured prompt architecture
-    const optimizationPrompt = buildImageOptimizationPrompt(
+  const response = await fetch("/api/ai/image", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
       designDescription,
       targetScheme,
-      lang
-    );
+      language: lang,
+    }),
+  });
 
-    const textModel = "gemini-flash-latest";
-    const promptResponse = await ai.models.generateContent({
-      model: textModel,
-      contents: optimizationPrompt
-    });
+  const data = await response.json();
 
-    const optimizedPrompt = promptResponse.text?.trim() || designDescription;
-    console.log(`Optimized Image Prompt (${targetScheme || 'General'}):`, optimizedPrompt);
-
-    // Generate image
-    const imageModel = "gemini-2.5-flash-image";
-
-    const response = await ai.models.generateContent({
-      model: imageModel,
-      contents: {
-        parts: [{ text: optimizedPrompt }]
-      },
-      config: {}
-    });
-
-    // Extract base64 image
-    const parts = response.candidates?.[0]?.content?.parts;
-    if (parts) {
-      for (const part of parts) {
-        if (part.inlineData && part.inlineData.data) {
-          const mimeType = part.inlineData.mimeType || 'image/png';
-          return `data:${mimeType};base64,${part.inlineData.data}`;
-        }
-      }
-    }
-
-    throw new Error("No image data found in response");
-
-  } catch (error) {
-    console.error("Gemini Image Generation Error:", error);
-    throw error;
+  if (!response.ok || data.error) {
+    throw data.error || { code: "unknown", message: "Image generation failed." };
   }
+
+  return data.imageUrl;
 };

@@ -1,0 +1,125 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenAI } from '@google/genai';
+import { buildImageOptimizationPrompt } from '@/lib/prompts/v1';
+import { IMAGE_PROMPT_PRESET, IMAGE_TIMEOUT_MS, RETRY_CONFIG } from '@/lib/ai/config';
+import { withRetryAndTimeout } from '@/lib/ai/retry';
+
+function getAI() {
+  const apiKey = process.env.GEMINI_API_KEY || '';
+  return new GoogleGenAI({ apiKey });
+}
+
+interface ImageRequest {
+  designDescription: string;
+  targetScheme?: string;
+  language?: 'en' | 'zh';
+}
+
+export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+
+  try {
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json(
+        { error: { code: 'auth_error', message: 'GEMINI_API_KEY not configured on server.' } },
+        { status: 500 }
+      );
+    }
+
+    const body: ImageRequest = await request.json();
+    const { designDescription, targetScheme, language = 'en' } = body;
+
+    if (!designDescription?.trim()) {
+      return NextResponse.json(
+        { error: { code: 'bad_request', message: 'Design description is required.' } },
+        { status: 400 }
+      );
+    }
+
+    // Round 1: Optimize prompt using text model
+    const optimizationPrompt = buildImageOptimizationPrompt(designDescription, targetScheme, language);
+
+    const optimizedPrompt = await withRetryAndTimeout(
+      async () => {
+        const response = await getAI().models.generateContent({
+          model: 'gemini-flash-latest',
+          contents: optimizationPrompt,
+          config: {
+            temperature: IMAGE_PROMPT_PRESET.temperature,
+          },
+        });
+        return response.text?.trim() || designDescription;
+      },
+      {
+        maxAttempts: RETRY_CONFIG.maxAttempts,
+        baseDelayMs: RETRY_CONFIG.baseDelayMs,
+        maxDelayMs: RETRY_CONFIG.maxDelayMs,
+        timeoutMs: IMAGE_TIMEOUT_MS,
+      }
+    );
+
+    // Round 2: Generate image
+    const imageUrl = await withRetryAndTimeout(
+      async () => {
+        const response = await getAI().models.generateContent({
+          model: 'gemini-2.5-flash-image',
+          contents: {
+            parts: [{ text: optimizedPrompt }],
+          },
+          config: {},
+        });
+
+        const parts = response.candidates?.[0]?.content?.parts;
+        if (parts) {
+          for (const part of parts) {
+            if (part.inlineData && part.inlineData.data) {
+              const mimeType = part.inlineData.mimeType || 'image/png';
+              return `data:${mimeType};base64,${part.inlineData.data}`;
+            }
+          }
+        }
+
+        throw new Error('No image data found in response');
+      },
+      {
+        maxAttempts: RETRY_CONFIG.maxAttempts,
+        baseDelayMs: RETRY_CONFIG.baseDelayMs,
+        maxDelayMs: RETRY_CONFIG.maxDelayMs,
+        timeoutMs: IMAGE_TIMEOUT_MS,
+      }
+    );
+
+    const duration = Date.now() - startTime;
+    console.log(`[AI Gateway] image | scheme=${targetScheme || 'general'} | duration=${duration}ms | success`);
+
+    return NextResponse.json({ imageUrl });
+  } catch (error: any) {
+    const duration = Date.now() - startTime;
+
+    if (error.code) {
+      console.error(`[AI Gateway] image | duration=${duration}ms | error=${error.code}`);
+
+      const statusMap: Record<string, number> = {
+        timeout: 504,
+        rate_limit: 429,
+        bad_request: 400,
+        unavailable: 503,
+        invalid_output: 422,
+        network: 502,
+        auth_error: 500,
+        unknown: 500,
+      };
+
+      return NextResponse.json(
+        { error: { code: error.code, message: error.message } },
+        { status: statusMap[error.code] || 500 }
+      );
+    }
+
+    console.error(`[AI Gateway] image | duration=${duration}ms | unexpected_error:`, error);
+    return NextResponse.json(
+      { error: { code: 'unknown', message: 'An unexpected server error occurred.' } },
+      { status: 500 }
+    );
+  }
+}

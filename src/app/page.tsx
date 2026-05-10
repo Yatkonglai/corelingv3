@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Send, Globe, Trash2, Sparkles, Gem } from "lucide-react";
+import { Send, Globe, Trash2, Sparkles, Gem, Wand2, Compass } from "lucide-react";
 import { Message, Role, Language } from "../lib/types";
 import { TRANSLATIONS } from "../lib/constants";
 import { sendMessageToGemini, generateJewelryImage } from "../lib/geminiService";
+import type { GenerationMode } from "../lib/ai/config";
+import { MODEL_PRESETS, DEFAULT_MODE } from "../lib/ai/config";
 import MessageBubble from "../components/MessageBubble";
 import { v4 as uuidv4 } from "uuid";
 
@@ -14,6 +16,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
+  const [mode, setMode] = useState<GenerationMode>(DEFAULT_MODE);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const t = TRANSLATIONS[language];
@@ -56,6 +59,10 @@ export default function Home() {
     ]);
   };
 
+  const handleModeToggle = () => {
+    setMode((prev) => (prev === "artisan" ? "muse" : "artisan"));
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -72,10 +79,13 @@ export default function Home() {
     setLoadingText(t.generating);
 
     try {
+      // FIX: Pass messages (without the new userMsg) as history.
+      // The new message is sent separately to avoid duplication.
       const responseText = await sendMessageToGemini(
-        messages.concat(userMsg),
+        messages,
         userMsg.text,
-        language
+        language,
+        mode
       );
 
       const aiMsg: Message = {
@@ -89,21 +99,42 @@ export default function Home() {
     } catch (error: any) {
       console.error(error);
 
-      let errorText =
-        language === "en"
-          ? "Sorry, something went wrong. Please check your API key."
-          : "抱歉，出错了。请检查您的 API 密钥。";
+      const errorCode = error?.code || "unknown";
+      const isZh = language === "zh";
 
-      const errorString = error?.toString() || JSON.stringify(error);
-      if (
-        errorString.includes("User location is not supported") ||
-        errorString.includes("400")
-      ) {
-        errorText =
-          language === "en"
-            ? "⚠️ Error: The AI model is not supported in your current region (Geo-blocked). Please check your network/VPN settings."
-            : "⚠️ 错误：当前地区不支持使用此 AI 模型 (区域限制)。请检查您的网络或 VPN 设置。";
-      }
+      const errorMessages: Record<string, { en: string; zh: string }> = {
+        timeout: {
+          en: "⏱ The Atelier is refining your request. Please try again in a moment.",
+          zh: "⏱ 工坊正在处理您的请求，请稍后再试。",
+        },
+        rate_limit: {
+          en: "🌸 The Atelier is experiencing high demand. Please wait a moment.",
+          zh: "🌸 工坊 demand 较高，请稍等片刻。",
+        },
+        bad_request: {
+          en: "⚠️ This request cannot be processed. Please check your input.",
+          zh: "⚠️ 无法处理此请求，请检查您的输入。",
+        },
+        unavailable: {
+          en: "⚠️ The Atelier is temporarily unavailable. Please try again shortly.",
+          zh: "⚠️ 工坊暂时不可用，请稍后重试。",
+        },
+        network: {
+          en: "⚠️ Connection issue. Please check your network and try again.",
+          zh: "⚠️ 连接问题，请检查网络后重试。",
+        },
+        auth_error: {
+          en: "🔑 Authentication failed. Please contact support.",
+          zh: "🔑 认证失败，请联系支持团队。",
+        },
+        unknown: {
+          en: "✨ Something unexpected happened. The Atelier is looking into it.",
+          zh: "✨ 发生意外情况，工坊正在排查。",
+        },
+      };
+
+      const msg = errorMessages[errorCode] || errorMessages.unknown;
+      const errorText = isZh ? msg.zh : msg.en;
 
       const errorMsg: Message = {
         id: uuidv4(),
@@ -161,18 +192,35 @@ export default function Home() {
       );
     } catch (error: any) {
       console.error(error);
-      let errorText =
-        language === "en"
-          ? "Failed to generate image. Please try again."
-          : "生成图片失败，请重试。";
 
-      const errorString = error?.toString() || JSON.stringify(error);
-      if (errorString.includes("User location is not supported")) {
-        errorText =
-          language === "en"
-            ? "⚠️ Image generation unavailable in your region."
-            : "⚠️ 当前地区无法使用图片生成功能。";
-      }
+      const errorCode = error?.code || "unknown";
+      const isZh = language === "zh";
+
+      const imageErrorMessages: Record<string, { en: string; zh: string }> = {
+        timeout: {
+          en: "⏱ Visual generation timed out. Please try again.",
+          zh: "⏱ 视觉生成超时，请重试。",
+        },
+        rate_limit: {
+          en: "🌸 Visual studio is busy. Please wait a moment.",
+          zh: "🌸 视觉工作室正忙，请稍等。",
+        },
+        bad_request: {
+          en: "⚠️ Cannot generate image for this design. Please try rephrasing.",
+          zh: "⚠️ 无法为此设计生成图像，请尝试重新描述。",
+        },
+        unavailable: {
+          en: "⚠️ Visual service is temporarily down. Please try again shortly.",
+          zh: "⚠️ 视觉服务暂时不可用，请稍后重试。",
+        },
+        unknown: {
+          en: "✨ Visual generation encountered an issue. Please try again.",
+          zh: "✨ 视觉生成遇到问题，请重试。",
+        },
+      };
+
+      const msg = imageErrorMessages[errorCode] || imageErrorMessages.unknown;
+      const errorText = isZh ? msg.zh : msg.en;
 
       setMessages((prev) =>
         prev.map((msg) => {
@@ -210,6 +258,31 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Mode Toggle */}
+            <button
+              onClick={handleModeToggle}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                mode === "artisan"
+                  ? "bg-[#f7f7f7] text-[#6a6a6a] hover:bg-[#ebebeb]"
+                  : "bg-[#fff8f6] text-[#ff385c] hover:bg-[#ffe8e3]"
+              }`}
+              title={
+                mode === "artisan"
+                  ? MODEL_PRESETS.artisan.description
+                  : MODEL_PRESETS.muse.description
+              }
+            >
+              {mode === "artisan" ? (
+                <Compass size={14} />
+              ) : (
+                <Wand2 size={14} />
+              )}
+              <span>
+                {language === "zh"
+                  ? MODEL_PRESETS[mode].labelZh
+                  : MODEL_PRESETS[mode].label}
+              </span>
+            </button>
             <button
               onClick={handleLanguageToggle}
               className="p-2 text-[#6a6a6a] hover:text-[#ff385c] hover:bg-[#f7f7f7] rounded-full transition-colors"
