@@ -4,7 +4,7 @@ import { getCompetitionNames } from './competitions';
 /**
  * Workflow Module
  * Step-by-step process for scheme generation.
- * Updated v1.2.0: Competition Fit now references structured criteria.
+ * Updated v1.3.0: Self-check is now archetype-aware instead of universal >=50%.
  */
 
 export function buildWorkflow(lang: PromptLanguage): string {
@@ -32,15 +32,20 @@ Use exactly this format:
 
 **Each scheme must include** (in this order — structure before gemstones):
 1. **Concept Narrative** (2-3 sentences)
-2. **Design DNA** — Which 2-3 designers' DNA are fused? Why?
-3. **Structural Description** — The metal framework, silhouette, negative space strategy, line weights
+2. **Design DNA** — Which 2-3 designers' DNA are fused? Why? **State their archetypes.**
+3. **Structural Description** — The metal framework, silhouette, negative space strategy, line weights. **Reference the correct archetype's density range.**
 4. **Key Materials** — Gems (with specific ct limits), metals, techniques
 5. **Wearability Note** — Weight estimate, comfort considerations, balance
-6. **Competition Fit** — Which specific competition(s) does this scheme target? Reference the CRITERIA names (not just competition names) and explain which criteria the design scores highest on. Example: "Strong for AGTA Spectrum — Gemstone Use & Appreciation (30%) through micro-pavé ruby setting; Craftsmanship & Technique (25%) via invisible titanium setting."
+6. **Competition Fit** — Which specific competition(s) does this scheme target? Reference the CRITERIA names (not just competition names) and explain which criteria the design scores highest on.
 
-**CRITICAL: Before presenting each scheme, run this self-check:**
-- [ ] Does the metal structure read as the protagonist? (Not the gemstone)
-- [ ] Is negative space ≥50%?
+**CRITICAL: Before presenting each scheme, run this archetype-aware self-check:**
+- [ ] Which archetype(s) am I fusing? (Lace / Architectural / Tapestry / Monolithic)
+- [ ] Does the density match the fused archetype's range?
+  - Lace: 50-75% negative space, skeletal/filigree
+  - Architectural: 30-50% negative space, sculptural flow
+  - Tapestry: 5-15% negative space, dense surface coverage
+  - Monolithic: 0-10% negative space, mass and texture
+- [ ] Is the metal structure the protagonist in the archetype's language?
 - [ ] Is the center stone ≤25% of visual weight?
 - [ ] Are all dimensions within wearable limits?
 - [ ] Would this piece look plausible in a real auction catalog?
@@ -55,6 +60,7 @@ Use exactly this format:
 | Wearability | ... | ... | ... |
 | Competition Appeal | ... | ... | ... |
 | Target Competition | ... | ... | ... |
+| Density Archetype | ... | ... | ... |
 
 ### Step 3: Hidden Image Prompts (Auto-Generated, Not User-Visible)
 After ALL visible content (schemes + comparison table), you MUST append a hidden metadata block.
@@ -84,7 +90,7 @@ After ALL visible content (schemes + comparison table), you MUST append a hidden
 3. Must include the Display Context Rule (mannequin bust, garment pin, or jewelry stand)
 4. Must include **natural lighting** (never "cinematic", "8k", "hyper-realistic")
 5. Must include **hand-worked texture** (never CGI-perfect polish)
-6. Must enforce negative space ≥50%
+6. Must enforce the correct archetype density (NOT always "airy open-work")
 7. Must specify realistic dimensions and proportions
 8. Must mention the jewelry type (necklace/ring/earrings/brooch)
 9. Must NOT contain any markdown formatting inside the prompt string
@@ -112,15 +118,20 @@ After ALL visible content (schemes + comparison table), you MUST append a hidden
 
 **每个方案必须包含**（按此顺序——先结构后宝石）：
 1. **概念叙述**（2-3 句）
-2. **设计 DNA** — 融合了哪 2-3 位设计师的 DNA？为什么？
-3. **结构描述** — 金属框架、轮廓、负空间策略、线条粗细
+2. **设计 DNA** — 融合了哪 2-3 位设计师的 DNA？为什么？**说明他们的原型。**
+3. **结构描述** — 金属框架、轮廓、负空间策略、线条粗细。**引用正确原型的密度范围。**
 4. **关键材质** — 宝石（带具体ct限制）、金属、工艺
 5. **佩戴性说明** — 重量估算、舒适度考量、平衡性
-6. **竞赛契合度** — 此方案瞄准哪些具体竞赛？引用**标准名称**（而非仅竞赛名称）并解释设计在哪些标准上得分最高。示例："AGTA Spectrum 表现强劲——通过微镶红宝石镶嵌在宝石运用与鉴赏（30%）得分高；通过隐形钛金属镶嵌在工艺与技法（25%）得分高。"
+6. **竞赛契合度** — 此方案瞄准哪些具体竞赛？引用**标准名称**（而非仅竞赛名称）并解释设计在哪些标准上得分最高。
 
-**关键：在呈现每个方案前，运行此自检：**
-- [ ] 金属结构是否呈现为主角？（而非宝石）
-- [ ] 负空间是否≥50%？
+**关键：在呈现每个方案前，运行此原型感知自检：**
+- [ ] 我融合了哪个原型？（蕾丝 / 建筑 / 织锦 / 巨石）
+- [ ] 密度是否匹配融合原型的范围？
+  - 蕾丝：50-75%负空间，骨架/掐丝
+  - 建筑：30-50%负空间，雕塑流动
+  - 织锦：5-15%负空间，密集表面覆盖
+  - 巨石：0-10%负空间，体量与纹理
+- [ ] 金属结构是否以原型的语言呈现为主角？
 - [ ] 主石是否≤视觉重量的25%？
 - [ ] 所有尺寸是否在佩戴限制内？
 - [ ] 这件作品在真实拍卖目录中是否看起来合理？
@@ -135,6 +146,7 @@ After ALL visible content (schemes + comparison table), you MUST append a hidden
 | 佩戴性 | ... | ... | ... |
 | 竞赛吸引力 | ... | ... | ... |
 | 目标竞赛 | ... | ... | ... |
+| 密度原型 | ... | ... | ... |
 
 ### 步骤 3：隐藏图片提示词（自动生成，不对用户可见）
 在所有可见内容（方案+对比表格）之后，你必须附加一个隐藏元数据块。
@@ -164,7 +176,7 @@ After ALL visible content (schemes + comparison table), you MUST append a hidden
 3. 必须包含展示环境规则（人体模型胸台、服装别针或珠宝展示架）
 4. 必须使用**自然光线**（绝不用"电影级"、"8k"、"超写实"）
 5. 必须包含**手工质感**（绝不用CGI完美抛光）
-6. 必须强制执行负空间≥50%
+6. 必须强制执行正确的原型密度（不是总是"通透镂空"）
 7. 必须指定真实的尺寸和比例
 8. 必须提及珠宝类型（项链/戒指/耳环/胸针）
 9. 提示词字符串内部不得包含任何 markdown 格式

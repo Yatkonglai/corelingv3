@@ -47,16 +47,17 @@ export const RETRY_CONFIG = {
 
 // ── Prompt Version Configuration ───────────────────────────────
 
-export type PromptVersionString = '1.0' | '1.1' | '1.2';
+export type PromptVersionString = '1.0' | '1.1' | '1.2' | '1.3';
 
-export const DEFAULT_PROMPT_VERSION: PromptVersionString = '1.2';
+export const DEFAULT_PROMPT_VERSION: PromptVersionString = '1.3';
 
-export const SUPPORTED_PROMPT_VERSIONS: PromptVersionString[] = ['1.0', '1.1', '1.2'];
+export const SUPPORTED_PROMPT_VERSIONS: PromptVersionString[] = ['1.0', '1.1', '1.2', '1.3'];
 
 export const PROMPT_VERSION_LABELS: Record<PromptVersionString, string> = {
   '1.0': 'base-architecture',
   '1.1': 'reality-constraint-layer',
   '1.2': 'competition-criteria-compression',
+  '1.3': 'master-density-archetypes',
 };
 
 /**

@@ -9,18 +9,20 @@ import { buildCompetitionCriteria } from './competitions';
 
 /**
  * GEMMA ARTISTE Prompt System
- * Version: 1.2.0
+ * Version: 1.3.0
  *
- * Added Competition Criteria Data Module + Prompt Compression in v1.2.0.
+ * Added Master Density Archetypes in v1.3.0.
+ * Replaced universal negative-space >= 50% with archetype-aware
+ * density profiles (Lace/Architectural/Tapestry/Monolithic).
  * Each module is a pure function. The assembler composes them
  * into the final system instruction based on conversation phase.
  */
 
 export const VERSION: PromptVersion = {
   major: 1,
-  minor: 2,
+  minor: 3,
   patch: 0,
-  label: 'competition-criteria-compression',
+  label: 'master-density-archetypes',
 };
 
 export function getVersionString(): string {

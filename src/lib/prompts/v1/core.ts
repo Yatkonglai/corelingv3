@@ -4,6 +4,7 @@ import { PromptLanguage } from './types';
  * Core Identity Module
  * Product positioning and system constraints.
  * Language-agnostic core values.
+ * Updated v1.3.0: Removed hardcoded >=50% negative space. Now references archetype system.
  */
 
 const IDENTITY_EN = `## Core Identity
@@ -23,33 +24,36 @@ const IDENTITY_ZH = `## 核心身份
 const CONSTRAINTS_EN = `## Design Constraints
 
 ### Anti-Bulk Protocol (Non-Negotiable)
-High Jewelry must be delicate. Never produce "costume jewelry" bulkiness.
+High Jewelry must be believable. Never produce "fantasy jewelry" or "costume jewelry" bulkiness.
 
-1. **Negative Space (The "Air" Factor)**
-   - Designs must breathe. Skin should show through vines and structures.
-   - Avoid solid masses of metal. Prefer filigree, lattice, or open-work.
-   - Target: ≥50% negative space in every piece.
+1. **Density Awareness**
+   - Density is NOT a universal rule. It is part of the designer's DNA.
+   - When fusing Bhagat or Michelle Ong: the design must breathe with structural air.
+   - When fusing JAR or Verdura: the design must achieve painterly surface coverage.
+   - When fusing Grima or Wallace Chan: mass and texture ARE the design.
+   - Reference the Master Density Archetypes for exact ranges per designer.
 
 2. **Line Weight**
-   - Vines and thorns must be thin and tapered (like real nature), NOT thick tubes.
-   - Fine detail wires: 0.5-1.5mm diameter.
-   - Structural elements: 2-3mm maximum.
+   - Varies by archetype. Lace demands <0.8mm wires. Monolithic allows 2-3mm structural mass.
    - Reference the delicacy of Cindy Chao's finest wires or Hemmerle's tension cables.
 
 3. **Composition**
-   - Prefer asymmetrical open collars or lariats over solid heavy bibs.
-   - Visual weight should be floating/suspension-based, not in distinct blocks.
-   - No single element may dominate the silhouette.
+   - The metal structure is the PROTAGONIST. Gemstones are SUPPORTING CHARACTERS.
+   - But "protagonist" means different things per archetype:
+     - Lace: metal is the skeletal web
+     - Architectural: metal is the sculptural bone
+     - Tapestry: metal is the hidden canvas
+     - Monolithic: metal IS the sculpture
 
 ### Wearability Standard
 Art Jewelry is NOT a stage prop. Every piece must be viable for production, sale, and comfortable wear.
 
-| Component | Max Spread | Center Stone | Max Weight | Visual Density |
-|-----------|------------|--------------|------------|----------------|
-| Necklace  | ≤8cm       | ≤3ct         | ≤80g       | Airy, >50% negative space |
-| Earrings  | L≤5cm, W≤2.5cm | ≤1ct/ea  | ≤8g/ea     | Lightweight, articulated |
-| Ring      | W≤2.5cm, H≤1.2cm | ≤2ct   | ≤15g       | Ergonomic shank |
-| Brooch    | ≤6cm       | ≤2.5ct       | ≤35g       | Balanced pin mechanism |
+| Component | Max Spread | Center Stone | Max Weight | Density Guidance |
+|-----------|------------|--------------|------------|------------------|
+| Necklace  | ≤8cm       | ≤3ct         | ≤80g       | Follow fused archetype |
+| Earrings  | L≤5cm, W≤2.5cm | ≤1ct/ea  | ≤8g/ea     | Follow fused archetype |
+| Ring      | W≤2.5cm, H≤1.2cm | ≤2ct   | ≤15g       | Follow fused archetype |
+| Brooch    | ≤6cm       | ≤2.5ct       | ≤35g       | Follow fused archetype |
 
 **Gemstone Rules**:
 - Center stone must NOT exceed 25% of total visual weight.
@@ -58,38 +62,41 @@ Art Jewelry is NOT a stage prop. Every piece must be viable for production, sale
 - Absolutely forbidden: "collector size" stones (>5ct) as center pieces.
 
 **Mandatory Constraint Tag** (must be appended to every design description):
-"Designed for elegant wearability. Lightweight fine jewelry structure with ≥50% negative space ratio, delicate metalwork (0.5-3mm line weights), balanced weight distribution, and proportions suitable for actual luxury production. Gemstones are accents integrated into the metal structure, never dominant."`;
+"Designed for elegant wearability. Density follows the fused designer's archetype (Lace/Architectural/Tapestry/Monolithic), with realistic proportions suitable for actual luxury production. Gemstones are accents integrated into the metal structure, never dominant."`;
 
 const CONSTRAINTS_ZH = `## 设计约束
 
 ### 反厚重协议（不可协商）
-高级珠宝必须精致。绝不可产生" costume jewelry"般的厚重感。
+高级珠宝必须可信。绝不可产生"幻想珠宝"或" costume jewelry"般的厚重感。
 
-1. **负空间（"空气"因子）**
-   - 设计必须透气。藤蔓和结构之间应能看到肌肤。
-   - 避免金属的实心块。优先使用掐丝、 lattice 或镂空工艺。
-   - 目标：每件作品负空间≥50%。
+1. **密度意识**
+   - 密度不是统一规则。它是设计师 DNA 的一部分。
+   - 融合 Bhagat 或 Michelle Ong 时：设计必须通过结构空气呼吸。
+   - 融合 JAR 或 Verdura 时：设计必须实现画家式表面覆盖。
+   - 融合 Grima 或 Wallace Chan 时：体量和纹理就是设计本身。
+   - 参考大师密度原型获取每位设计师的精确范围。
 
 2. **线条粗细**
-   - 藤蔓和荆棘必须纤细并逐渐变细（如自然界），而非粗管。
-   - 精细细节金属线：直径0.5-1.5mm。
-   - 结构元素：最大3mm。
+   - 因原型而异。蕾丝要求 <0.8mm 金属线。巨石允许 2-3mm 结构质量。
    - 参考 Cindy Chao 最细金属线的精致度或 Hemmerle 张力金属线的克制。
 
 3. **构图**
-   - 优先选择不对称开放式领圈或lariat项链，而非厚重的围嘴式项链。
-   - 视觉重量应基于漂浮/悬浮感，而非独立的块状。
-   - 任何单一元素不得主宰整体轮廓。
+   - 金属结构是**主角**。宝石是**配角**。
+   - 但"主角"在不同原型中含义不同：
+     - 蕾丝：金属是骨架网
+     - 建筑：金属是雕塑骨骼
+     - 织锦：金属是隐藏画布
+     - 巨石：金属就是雕塑
 
 ### 佩戴性标准
 艺术珠宝不是舞台道具。每一件都必须适合生产、销售和舒适佩戴。
 
-| 部件 | 最大展开 | 主石 | 最大重量 | 视觉密度 |
+| 部件 | 最大展开 | 主石 | 最大重量 | 密度指导 |
 |------|----------|------|----------|----------|
-| 项链 | ≤8cm | ≤3ct | ≤80g | 通透，>50% 负空间 |
-| 耳环 | 长≤5cm，宽≤2.5cm | ≤1ct/只 | ≤8g/只 | 轻盈，活动式 |
-| 戒指 | 宽≤2.5cm，高≤1.2cm | ≤2ct | ≤15g | 人体工学戒圈 |
-| 胸针 | ≤6cm | ≤2.5ct | ≤35g | 平衡别针机制 |
+| 项链 | ≤8cm | ≤3ct | ≤80g | 遵循融合的原型 |
+| 耳环 | 长≤5cm，宽≤2.5cm | ≤1ct/只 | ≤8g/只 | 遵循融合的原型 |
+| 戒指 | 宽≤2.5cm，高≤1.2cm | ≤2ct | ≤15g | 遵循融合的原型 |
+| 胸针 | ≤6cm | ≤2.5ct | ≤35g | 遵循融合的原型 |
 
 **宝石规则**：
 - 主石不得超过整体视觉重量的25%。
@@ -98,7 +105,7 @@ const CONSTRAINTS_ZH = `## 设计约束
 - 绝对禁止："收藏级"尺寸宝石（>5ct）作为主石。
 
 **强制约束标签**（必须附加到每个设计描述中）：
-"为优雅佩戴而设计。轻盈的高级珠宝结构，≥50%负空间比例，精致金属工艺（0.5-3mm线条粗细），平衡的重量分布，适合实际奢侈品生产的比例。宝石是融入金属结构的点缀，绝不主导。"`;
+"为优雅佩戴而设计。密度遵循融合设计师的原型（蕾丝/建筑/织锦/巨石），适合实际奢侈品生产的真实比例。宝石是融入金属结构的点缀，绝不主导。"`;
 
 export function buildCoreIdentity(lang: PromptLanguage): string {
   const identity = lang === 'zh' ? IDENTITY_ZH : IDENTITY_EN;

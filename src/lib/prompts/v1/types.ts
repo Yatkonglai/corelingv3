@@ -1,6 +1,6 @@
 /**
  * Prompt Architecture Types
- * Version: 1.2.0
+ * Version: 1.3.0
  *
  * Core types for the structured prompt system.
  * All prompt modules are pure functions that return strings.
@@ -24,6 +24,17 @@ export type ConversationPhase =
   | 'scheme-generation' // Step 2: Full scheme generation with all modules
   | 'refinement'        // Step 3+: Iterating on existing schemes
   | 'image-generation'; // Image generation request
+
+/**
+ * Master Density Archetype
+ * Determines the density constraint profile for a design.
+ * Each archetype represents a distinct compositional philosophy.
+ */
+export type DensityArchetype =
+  | 'lace'          // Structural air: Bhagat, Michelle Ong
+  | 'architectural' // Sculptural flow: Cindy Chao, Shaun Leane, Lauren Adriana
+  | 'tapestry'      // Surface richness: JAR, Verdura
+  | 'monolithic';   // Mass & texture: Grima, Wallace Chan, Hemmerle, Sevan, Belperron
 
 export interface OutputContract {
   /** Human-readable description of expected output */
@@ -57,6 +68,8 @@ export interface DesignerProfile {
   keywords: string[];
   signatureTechniques: string[];
   philosophy: string;
+  /** Density archetype for constraint application */
+  archetype: DensityArchetype;
 }
 
 /**

@@ -28,6 +28,7 @@ const versionLoaders: Record<
   '1.0': buildV1, // v1.0 base (before constraint layer)
   '1.1': buildV1, // v1.1 reality constraints (same entry, phase ignored = full)
   '1.2': buildV1, // v1.2 with phase-aware compression
+  '1.3': buildV1, // v1.3 master density archetypes
 };
 
 /**
@@ -70,6 +71,11 @@ export function getPromptVersionInfo(): Array<{
       version: '1.2',
       label: 'competition-criteria-compression',
       description: 'Adds 6 competition profiles and phase-aware prompt compression for token efficiency.',
+    },
+    {
+      version: '1.3',
+      label: 'master-density-archetypes',
+      description: 'Replaces universal negative-space rule with 4 archetype-aware density profiles (Lace/Architectural/Tapestry/Monolithic) matching 12 master designers.',
     },
   ];
 }
