@@ -44,3 +44,29 @@ export const RETRY_CONFIG = {
   baseDelayMs: 500,
   maxDelayMs: 5000,
 } as const;
+
+// ── Prompt Version Configuration ───────────────────────────────
+
+export type PromptVersionString = '1.0' | '1.1' | '1.2';
+
+export const DEFAULT_PROMPT_VERSION: PromptVersionString = '1.2';
+
+export const SUPPORTED_PROMPT_VERSIONS: PromptVersionString[] = ['1.0', '1.1', '1.2'];
+
+export const PROMPT_VERSION_LABELS: Record<PromptVersionString, string> = {
+  '1.0': 'base-architecture',
+  '1.1': 'reality-constraint-layer',
+  '1.2': 'competition-criteria-compression',
+};
+
+/**
+ * Resolve prompt version from environment, fallback to default.
+ * Override via CORELING_PROMPT_VERSION env var (e.g. "1.1").
+ */
+export function resolvePromptVersion(): PromptVersionString {
+  const env = process.env.CORELING_PROMPT_VERSION;
+  if (env && SUPPORTED_PROMPT_VERSIONS.includes(env as PromptVersionString)) {
+    return env as PromptVersionString;
+  }
+  return DEFAULT_PROMPT_VERSION;
+}

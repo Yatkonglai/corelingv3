@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI, GenerateContentResponse } from '@google/genai';
-import { buildSystemInstruction } from '@/lib/prompts/v1';
-import { MODEL_PRESETS, DEFAULT_MODE, CHAT_TIMEOUT_MS, RETRY_CONFIG } from '@/lib/ai/config';
+import { loadPrompt } from '@/lib/prompts/loader';
+import { MODEL_PRESETS, DEFAULT_MODE, CHAT_TIMEOUT_MS, RETRY_CONFIG, resolvePromptVersion } from '@/lib/ai/config';
 import { withRetryAndTimeout } from '@/lib/ai/retry';
-import type { GenerationMode } from '@/lib/ai/config';
+import type { GenerationMode, PromptVersionString } from '@/lib/ai/config';
 import type { ConversationPhase } from '@/lib/prompts/v1';
 
 function getAI() {
@@ -72,9 +72,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const phase = detectPhase(history, message);
+    // ── Version & Phase Resolution ────────────────────────────
+    const envVersion = resolvePromptVersion();
+
+    // Allow A/B testing via header: X-Coreling-Prompt-Version: 1.1
+    const headerVersion = request.headers.get('x-coreling-prompt-version') as PromptVersionString | null;
+    const promptVersion: PromptVersionString = headerVersion ?? envVersion;
+
+    // Allow phase override via header: X-Coreling-Prompt-Phase: consultation
+    const headerPhase = request.headers.get('x-coreling-prompt-phase') as ConversationPhase | null;
+    const autoPhase = detectPhase(history, message);
+    const phase: ConversationPhase = headerPhase ?? autoPhase;
+
+    // Build system instruction (versioned)
     const preset = MODEL_PRESETS[mode];
-    const systemInstruction = buildSystemInstruction(language, phase);
+    const systemInstruction = loadPrompt({ version: promptVersion, lang: language, phase });
 
     // Convert history to Gemini format
     const geminiHistory = history.map((msg) => ({
@@ -108,7 +120,7 @@ export async function POST(request: NextRequest) {
     );
 
     const duration = Date.now() - startTime;
-    console.log(`[AI Gateway] chat | mode=${mode} | phase=${phase} | temp=${preset.temperature} | duration=${duration}ms | success`);
+    console.log(`[AI Gateway] chat | version=${promptVersion} | phase=${phase} | mode=${mode} | temp=${preset.temperature} | duration=${duration}ms | success`);
 
     return NextResponse.json({ text: result });
   } catch (error: any) {

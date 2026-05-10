@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { buildImageOptimizationPrompt } from '@/lib/prompts/v1';
-import { IMAGE_PROMPT_PRESET, IMAGE_TIMEOUT_MS, RETRY_CONFIG } from '@/lib/ai/config';
+import { IMAGE_PROMPT_PRESET, IMAGE_TIMEOUT_MS, RETRY_CONFIG, resolvePromptVersion } from '@/lib/ai/config';
 import { withRetryAndTimeout } from '@/lib/ai/retry';
 
 function getAI() {
@@ -97,8 +97,9 @@ export async function POST(request: NextRequest) {
       }
     );
 
+    const version = resolvePromptVersion();
     const duration = Date.now() - startTime;
-    console.log(`[AI Gateway] image | scheme=${targetScheme || 'general'} | singleRound=${!!prompt} | duration=${duration}ms | success`);
+    console.log(`[AI Gateway] image | version=${version} | scheme=${targetScheme || 'general'} | singleRound=${!!prompt} | duration=${duration}ms | success`);
 
     return NextResponse.json({ imageUrl });
   } catch (error: any) {
