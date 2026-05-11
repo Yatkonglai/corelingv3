@@ -48,7 +48,7 @@ const PHASE_MODULES: Record<ConversationPhase, {
     constraints: false,      // skip heavy constraints during Q&A
     designerDNA: false,      // skip during Q&A
     competitions: true,
-    workflow: false,         // skip full workflow
+    workflow: true,          // keep Step 1 consultation behavior
     examples: false,         // skip examples during Q&A
     contract: false,         // skip contract during Q&A
     competitionCompressed: true,
@@ -150,12 +150,20 @@ export function buildImageOptimizationPrompt(
   const aestheticRules = lang === 'zh'
     ? `美学规则（必须遵守）：
 1. **精致度**：使用"高级珠宝"、"掐丝"、"精致"、"手工锻造纹理"、"超薄金属工艺"等关键词。
-2. **负空间**：确保设计看起来通透开放。不要实心，不要厚重。负空间必须≥50%。
+2. **负空间（原型感知）**：匹配设计融合原型的密度，不要统一规则：
+   - 蕾丝：通透、骨架感、50-75%负空间、掐丝、张力固定宝石
+   - 建筑：雕塑流动、30-50%负空间、有机框架
+   - 织锦：密集表面覆盖、5-15%负空间、微镶渐变
+   - 巨石：实心体量、0-10%负空间、雕刻体积、原始纹理
 3. **写实度**：使用"微距摄影"、"自然光线"、"手工质感"。禁止使用"8k"、"电影级"、"超写实"、"CGI"。
 4. **比例**：确保珠宝 pieces 与人体比例协调。参考真实高级珠宝尺寸。`
     : `AESTHETIC RULES (MUST FOLLOW):
 1. **Delicacy**: Use keywords like "fine jewelry," "filigree," "delicate," "hand-forged texture," "ultra-thin metalwork."
-2. **Negative Space**: Ensure the design looks airy and open. NOT solid, NOT chunky. Negative space must be ≥50%.
+2. **Negative Space (Archetype-Aware)**: Match the density of the design's fused archetype. Do NOT apply a universal rule:
+   - Lace: airy, skeletal, 50-75% negative space, filigree, tension-held gems
+   - Architectural: sculptural flow, 30-50% negative space, organic frameworks
+   - Tapestry: dense surface coverage, 5-15% negative space, micro-pavé gradients
+   - Monolithic: solid mass, 0-10% negative space, carved volume, raw texture
 3. **Realism**: Use "macro photography," "natural lighting," "hand-worked texture." NEVER use "8k," "cinematic," "hyper-realistic," or "CGI."
 4. **Proportion**: Ensure jewelry pieces are proportional to a human scale. Reference real high jewelry dimensions.`;
 

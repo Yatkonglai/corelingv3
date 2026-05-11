@@ -65,11 +65,19 @@ export interface PromptModule {
 
 export interface DesignerProfile {
   name: string;
+  /** Active era or generation */
+  era: string;
   keywords: string[];
   signatureTechniques: string[];
+  /** Signature materials this designer is known for */
+  signatureMaterials: string[];
   philosophy: string;
+  /** What this designer NEVER does — critical for authentic fusion */
+  avoid: string[];
   /** Density archetype for constraint application */
   archetype: DensityArchetype;
+  /** A representative quote that captures the designer's voice */
+  keyQuote: string;
 }
 
 /**
