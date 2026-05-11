@@ -15,9 +15,7 @@ export interface ValidationResult {
 
 const FORBIDDEN_PHRASES = [
   '8k resolution',
-  '8k',
   'cinematic lighting',
-  'cinematic',
   'hyper-realistic',
   'hyper realistic',
   'CGI',
@@ -26,7 +24,7 @@ const FORBIDDEN_PHRASES = [
 
 const SCHEME_HEADING_EN = /### Scheme [A-C]:/g;
 const SCHEME_HEADING_ZH = /### 方案 [A-C]:/g;
-const CORELING_META = /```json\s*coreling_meta\s*([\s\S]*?)```/;
+const CORELING_META = /```(?:json\s+)?coreling_meta\s*([\s\S]*?)```/;
 const STRUCTURAL_LEAD_EN = /Structural Lead/i;
 const STRUCTURAL_LEAD_ZH = /结构主导/i;
 

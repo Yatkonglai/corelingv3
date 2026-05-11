@@ -113,7 +113,7 @@ Platinum vine collar necklace with scattered ruby pavé thorn tips, Shaun Leane-
 **Aesthetic Contributor**: Michelle Ong (tactile fluidity, ruyi motifs)
 **Archetype**: Lace (50-75% negative space)
 
-**Structural Description**: Near-invisible 0.3mm platinum wire-work forms a skeletal lattice framework. Diamonds are tension-set at the intersection nodes, creating a "floating" grid effect. The lattice spans 7cm across the collarbone, with calibrated stone alignment defining the overall silhouette — the metal is almost invisible. Negative space is ~65%. The framework uses mortise-and-tenon inspired joints at major nodes for structural integrity without bulk. Metal lines taper from 0.8mm at load-bearing nodes to 0.3mm at peripheral edges.
+**Structural Description**: Near-invisible 0.3mm platinum wire-work forms a skeletal lattice framework. Diamonds are tension-set at the intersection nodes, creating a "weightless" grid effect where tension settings are the only visible mechanics. The lattice spans 7cm across the collarbone, with calibrated stone alignment defining the overall silhouette — the metal is almost invisible. Negative space is ~65%. The framework uses mortise-and-tenon inspired joints at major nodes for structural integrity without bulk. Metal lines taper from 0.8mm at load-bearing nodes to 0.3mm at peripheral edges.
 
 **Key Materials**: Platinum (near-invisible wire framework, 0.3-0.8mm), calibrated diamonds (0.5-1.0mm, ~80 stones tension-set at lattice nodes), no center stone — the FIELD of diamonds is the design. Imperial jade cabochon (8mm) as a single accent at the center node, held by tension.
 
@@ -274,7 +274,7 @@ const EXAMPLES_ZH: FewShotExample[] = [
 **美学贡献者**：Michelle Ong（触觉流动性、如意图案）
 **原型**：蕾丝（50-75% 负空间）
 
-**结构描述**：近不可见的 0.3mm 铂金丝线构成骨架格窗框架。钻石张力固定于交叉节点，创造"悬浮"网格效果。格窗横跨锁骨 7cm，校准宝石对齐定义整体轮廓——金属几乎不可见。负空间约 65%。框架在主要节点使用榫卯灵感关节以确保结构完整性而不增加体量。金属线从承重节点的 0.8mm 渐细至边缘的 0.3mm。
+**结构描述**：近不可见的 0.3mm 铂金丝线构成骨架格窗框架。钻石张力固定于交叉节点，创造"失重"网格效果，张力镶嵌是唯一可见的机械结构。格窗横跨锁骨 7cm，校准宝石对齐定义整体轮廓——金属几乎不可见。负空间约 65%。框架在主要节点使用榫卯灵感关节以确保结构完整性而不增加体量。金属线从承重节点的 0.8mm 渐细至边缘的 0.3mm。
 
 **关键材质**：铂金（近不可见丝线框架，0.3-0.8mm），校准钻石（0.5-1.0mm，~80 颗张力固定于格窗节点），无中心石——钻石 FIELD 就是设计本身。帝王翡翠蛋面（8mm）作为中心节点的单一点缀，张力固定。
 
