@@ -80,7 +80,7 @@ Platinum vine collar necklace with scattered ruby pavé thorn tips, Shaun Leane-
 **Design DNA**: JAR (painterly pavé, color bleeding, micro-pavé) + Verdura (cabochon clusters, tropical exuberance)
 **Archetype**: Tapestry (5-15% negative space)
 
-**Structural Description**: Solid platinum base brooch, 4.5cm x 3.5cm. The metal is almost entirely hidden beneath a seamless gradient of micro-pavé. The surface reads as a continuous field of color — deep crimson bleeding into burnt orange and gold. Negative space is minimal (~8%), appearing only at the very edges where the "leaf" tapers to fine points (0.3mm). The setting mechanics are invisible; stones appear to float on the surface.
+**Structural Description**: Solid platinum base brooch, 4.5cm x 3.5cm. The metal is almost entirely hidden beneath a seamless gradient of micro-pavé. The surface reads as a continuous field of color — deep crimson bleeding into burnt orange and gold. Negative space is minimal (~8%), appearing only at the very edges where the "leaf" tapers to fine points (0.3mm). The setting mechanics are invisible; the surface reads as a continuous field of color with no visible metal interruption.
 
 **Key Materials**: Platinum (hidden structural base), Burmese rubies (0.8-1.2mm pavé, ~180 stones), Sri Lankan sapphires (0.8-1.2mm pavé, ~120 stones), diamond micro-accents (0.2mm, ~40 stones). No single stone exceeds 0.8mm — the design is about the FIELD, not individual gems.
 
@@ -100,6 +100,39 @@ Platinum vine collar necklace with scattered ruby pavé thorn tips, Shaun Leane-
 
 *This design includes the mandatory constraint tag: "Designed for elegant wearability. Density follows the Tapestry archetype with realistic proportions suitable for actual luxury production. Gemstones are accents integrated into the metal structure, never dominant."*`,
     rationale: 'Shows Tapestry archetype: JAR-style dense pavé with minimal negative space (~8%), hidden metal, surface-as-canvas philosophy. Demonstrates that negative space is NOT always high for master-level work.',
+  },
+  {
+    id: 'scheme-generation-lace-1',
+    input: 'A Mughal-inspired platinum necklace with diamond lattice, airy and imperial',
+    output: `### Scheme A: Imperial Lattice
+
+**Concept Narrative**: Reimagining Mughal jali screens as wearable architecture. Near-invisible platinum wire-work creates a tension-held diamond lattice where the gems define the silhouette, not the metal. The piece feels like it is held together by air.
+
+**Design DNA**: Bhagat (Mughal jali, heritage techniques, calibrated stone alignment) + Michelle Ong (titanium lace, textile-to-metal articulation)
+**Structural Lead**: Bhagat (lace archetype, 50-75% negative space)
+**Aesthetic Contributor**: Michelle Ong (tactile fluidity, ruyi motifs)
+**Archetype**: Lace (50-75% negative space)
+
+**Structural Description**: Near-invisible 0.3mm platinum wire-work forms a skeletal lattice framework. Diamonds are tension-set at the intersection nodes, creating a "floating" grid effect. The lattice spans 7cm across the collarbone, with calibrated stone alignment defining the overall silhouette — the metal is almost invisible. Negative space is ~65%. The framework uses mortise-and-tenon inspired joints at major nodes for structural integrity without bulk. Metal lines taper from 0.8mm at load-bearing nodes to 0.3mm at peripheral edges.
+
+**Key Materials**: Platinum (near-invisible wire framework, 0.3-0.8mm), calibrated diamonds (0.5-1.0mm, ~80 stones tension-set at lattice nodes), no center stone — the FIELD of diamonds is the design. Imperial jade cabochon (8mm) as a single accent at the center node, held by tension.
+
+**Wearability Note**: Estimated 22g. Despite the visual delicacy, the mortise-and-tenon joints provide structural integrity. Inner surface has smooth platinum rails where the lattice contacts skin. Suitable for 4+ hour wear. The open lattice allows air circulation.
+
+**Competition Fit**: Strong for Couture (craftsmanship showcase — tension-setting at this scale demands extraordinary skill). Niche for AGTA Spectrum (no single large stone to showcase). The jali heritage narrative resonates with GIT judges.
+
+---
+
+| Aspect | Scheme A: Imperial Lattice |
+|--------|----------------------------|
+| Concept Strength | Very high (Mughal jali revival) |
+| Technical Innovation | Very high (tension-held lattice at 0.3mm wire) |
+| Wearability | Medium (delicate, requires care) |
+| Competition Appeal | Niche (Couture-focused) |
+| Density Archetype | Lace (50-75% negative space) |
+
+*This design includes the mandatory constraint tag: "Designed for elegant wearability. Density follows the Lace archetype with realistic proportions suitable for actual luxury production. Gemstones are accents integrated into the metal structure, never dominant."*`,
+    rationale: 'Shows Lace archetype: Bhagat-style structural lattice with 50-75% negative space. Near-invisible wire-work, tension-held gems, engineering-grade precision. Demonstrates that "lace" in high jewelry is structural engineering, not decorative filigree.',
   },
   {
     id: 'scheme-generation-monolithic-1',
@@ -208,7 +241,7 @@ const EXAMPLES_ZH: FewShotExample[] = [
 **设计 DNA**：JAR（画家式密镶、色彩 bleeding、微镶）+ Verdura（蛋面簇、热带 exuberance）
 **原型**：织锦（5-15% 负空间）
 
-**结构描述**：实心铂金底座胸针，4.5cm x 3.5cm。金属几乎完全隐藏在无缝的微镶渐变之下。表面读起来像连续的色彩场——深 crimson bleeding 入 burnt orange 和 gold。负空间极少（~8%），仅出现在"叶片"渐细至尖端（0.3mm）的边缘。镶嵌机制不可见；宝石仿佛漂浮在表面。
+**结构描述**：实心铂金底座胸针，4.5cm x 3.5cm。金属几乎完全隐藏在无缝的微镶渐变之下。表面读起来像连续的色彩场——深 crimson bleeding 入 burnt orange 和 gold。负空间极少（~8%），仅出现在"叶片"渐细至尖端（0.3mm）的边缘。镶嵌机制不可见；表面读起来像连续的色彩场，无可见金属中断。
 
 **关键材质**：铂金（隐藏结构底座），缅甸红宝石（0.8-1.2mm密镶，~180颗），斯里兰卡蓝宝石（0.8-1.2mm密镶，~120颗），钻石微点缀（0.2mm，~40颗）。没有单颗石超过0.8mm——设计关乎 FIELD，而非个体宝石。
 
@@ -228,6 +261,39 @@ const EXAMPLES_ZH: FewShotExample[] = [
 
 *此设计包含强制约束标签："为优雅佩戴而设计。密度遵循织锦原型，适合实际奢侈品生产的真实比例。宝石是融入金属结构的点缀，绝不主导。"*`,
     rationale: '展示了织锦原型：JAR 风格密集密镶，负空间极少（~8%），隐藏金属，表面即画布哲学。证明了负空间并非总是大师级作品的高值。',
+  },
+  {
+    id: 'scheme-generation-lace-zh-1',
+    input: '一款莫卧儿风格的铂金项链，钻石格窗，通透而帝国感',
+    output: `### 方案 A: 帝国格窗
+
+**概念叙述**：将莫卧儿 jali 屏风重新想象为可穿戴建筑。近不可见的铂金丝线创造张力固定的钻石格窗，宝石定义轮廓，而非金属。作品感觉由空气支撑。
+
+**设计 DNA**：Bhagat（莫卧儿 jali、 heritage 技法、校准宝石对齐）+ Michelle Ong（钛金属蕾丝、纺织→金属 articulation）
+**结构主导**：Bhagat（蕾丝原型，50-75% 负空间）
+**美学贡献者**：Michelle Ong（触觉流动性、如意图案）
+**原型**：蕾丝（50-75% 负空间）
+
+**结构描述**：近不可见的 0.3mm 铂金丝线构成骨架格窗框架。钻石张力固定于交叉节点，创造"悬浮"网格效果。格窗横跨锁骨 7cm，校准宝石对齐定义整体轮廓——金属几乎不可见。负空间约 65%。框架在主要节点使用榫卯灵感关节以确保结构完整性而不增加体量。金属线从承重节点的 0.8mm 渐细至边缘的 0.3mm。
+
+**关键材质**：铂金（近不可见丝线框架，0.3-0.8mm），校准钻石（0.5-1.0mm，~80 颗张力固定于格窗节点），无中心石——钻石 FIELD 就是设计本身。帝王翡翠蛋面（8mm）作为中心节点的单一点缀，张力固定。
+
+**佩戴性说明**：估算 22g。尽管视觉上精致，榫卯关节提供结构完整性。内侧表面有光滑铂金导轨，格窗接触肌肤处。适合 4 小时以上佩戴。开放式格窗允许空气流通。
+
+**竞赛契合度**：Couture 表现强劲（工艺展示——此规模张力固定需要非凡技艺）。AGTA Spectrum 小众（无单颗大宝石可展示）。Jali heritage 叙事与 GIT 评委产生共鸣。
+
+---
+
+| 维度 | 方案 A: 帝国格窗 |
+|------|------------------|
+| 概念力度 | 极高（莫卧儿 jali 复兴） |
+| 技术创新 | 极高（0.3mm 丝线上张力固定格窗） |
+| 佩戴性 | 中（精致，需要小心佩戴） |
+| 竞赛吸引力 | 小众（Couture 聚焦） |
+| 密度原型 | 蕾丝（50-75% 负空间） |
+
+*此设计包含强制约束标签："为优雅佩戴而设计。密度遵循蕾丝原型，适合实际奢侈品生产的真实比例。宝石是融入金属结构的点缀，绝不主导。"*`,
+    rationale: '展示了蕾丝原型：Bhagat 风格结构格窗，50-75% 负空间。近不可见丝线、张力固定宝石、工程级精度。证明高级珠宝中的"蕾丝"是结构工程，而非装饰性掐丝。',
   },
   {
     id: 'scheme-generation-monolithic-zh-1',

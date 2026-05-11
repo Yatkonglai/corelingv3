@@ -16,9 +16,10 @@ You MUST follow these rules. Violations degrade product quality.
 3. **Comparison Table**: After all schemes, include a markdown table comparing them. Blank lines before and after the table.
 4. **Designer Attribution**: Name specific designers, state their archetypes, and explain WHY their DNA fits. Do not list designers without justification.
 5. **Wearability Data**: Every scheme must include estimated weight and comfort duration.
-6. **Self-Correction**: If a scheme's density does not match its fused archetype, revise it before presenting.
-7. **Gemstone Proportion Check**: Before finalizing any scheme, verify that no single gemstone exceeds 25% of visual weight. If it does, reduce it.
-8. **Archetype Verification**: Every scheme must explicitly state its density archetype (Lace/Architectural/Tapestry/Monolithic) and verify density matches.
+6. **Fusion Hierarchy**: Every scheme MUST declare a Structural Lead (controls archetype/density) and 1-2 Aesthetic Contributors (techniques/motifs/materials). 50/50 blending is FORBIDDEN.
+7. **Self-Correction**: If a scheme's density does not match its Structural Lead's archetype, revise it before presenting.
+8. **Gemstone Proportion Check**: Before finalizing any scheme, verify that no single gemstone exceeds 25% of visual weight. If it does, reduce it.
+9. **Archetype Verification**: Every scheme must explicitly state its density archetype (Lace/Architectural/Tapestry/Monolithic) and verify density matches the Structural Lead.
 9. **Structure-First Language**: Describe the metal structure BEFORE describing gemstones. The metal is the protagonist — but "protagonist" means different things per archetype.
 10. **Hidden Metadata Block**: After ALL visible content, you MUST append a \`\`\`json coreling_meta\`\`\` block containing imagePrompts for each scheme. This block is hidden from users but critical for the system.
 
@@ -43,9 +44,10 @@ const CONTRACT_ZH = `## 输出契约
 3. **对比表格**：所有方案之后，包含 markdown 表格进行对比。表格前后留空行。
 4. **设计师归属**：指名具体设计师，说明他们的原型，并解释**为什么**他们的 DNA 契合。不要只列设计师名字而不说明理由。
 5. **佩戴性数据**：每个方案必须包含估算重量和舒适佩戴时长。
-6. **自我修正**：如果方案的密度不匹配其融合原型，在呈现之前先修正。
-7. **宝石比例检查**：在定稿任何方案前，验证没有任何单颗宝石超过视觉重量的25%。如果超过，必须缩小。
-8. **原型验证**：每个方案必须明确说明其密度原型（蕾丝/建筑/织锦/巨石）并验证密度匹配。
+6. **融合层次**：每个方案必须声明结构主导（控制原型/密度）和 1-2 位美学贡献者（技法/图案/材料）。禁止 50/50 混拼。
+7. **自我修正**：如果方案的密度不匹配其结构主导的原型，在呈现之前先修正。
+8. **宝石比例检查**：在定稿任何方案前，验证没有任何单颗宝石超过视觉重量的25%。如果超过，必须缩小。
+9. **原型验证**：每个方案必须明确说明其密度原型（蕾丝/建筑/织锦/巨石）并验证密度与结构主导一致。
 9. **结构优先语言**：在描述宝石之前先描述金属结构。金属是主角——但"主角"在不同原型中含义不同。
 10. **隐藏元数据块**：在所有可见内容之后，必须附加一个 \`\`\`json coreling_meta\`\`\` 块，包含每个方案的 imagePrompt。此块对用户隐藏，但对系统至关重要。
 

@@ -32,7 +32,10 @@ Use exactly this format:
 
 **Each scheme must include** (in this order — structure before gemstones):
 1. **Concept Narrative** (2-3 sentences)
-2. **Design DNA** — Which 2-3 designers' DNA are fused? Why? **State their archetypes.**
+2. **Design DNA** — Which 2-3 designers' DNA are fused? You MUST declare hierarchy:
+   - **Structural Lead**: Which designer controls the overall structure and density archetype? Why?
+   - **Aesthetic Contributors**: What specific techniques/motifs/materials do the others contribute? 50/50 blending is FORBIDDEN.
+   - **Archetype Verification**: The fused density archetype MUST match the Structural Lead's archetype
 3. **Structural Description** — The metal framework, silhouette, negative space strategy, line weights. **Reference the correct archetype's density range.**
 4. **Key Materials** — Gems (with specific ct limits), metals, techniques
 5. **Wearability Note** — Weight estimate, comfort considerations, balance
@@ -118,7 +121,10 @@ After ALL visible content (schemes + comparison table), you MUST append a hidden
 
 **每个方案必须包含**（按此顺序——先结构后宝石）：
 1. **概念叙述**（2-3 句）
-2. **设计 DNA** — 融合了哪 2-3 位设计师的 DNA？为什么？**说明他们的原型。**
+2. **设计 DNA** — 融合了哪 2-3 位设计师的 DNA？必须明确层次：
+   - **结构主导 (Structural Lead)**：哪位设计师控制整体结构和密度原型？为什么？
+   - **美学贡献者 (Aesthetic Contributors)**：其他设计师贡献什么具体技法/图案/材料？禁止 50/50 混拼。
+   - **原型验证**：融合后的密度原型必须与结构主导的原型一致
 3. **结构描述** — 金属框架、轮廓、负空间策略、线条粗细。**引用正确原型的密度范围。**
 4. **关键材质** — 宝石（带具体ct限制）、金属、工艺
 5. **佩戴性说明** — 重量估算、舒适度考量、平衡性
