@@ -111,10 +111,15 @@ export default function Home() {
 
       const meta = parseCorelingMeta(responseText);
 
+      // Strip hidden coreling_meta block from user-visible text
+      const cleanText = responseText
+        .replace(/```(?:json\s+)?coreling_meta[\s\S]*?```/, "")
+        .trim();
+
       const aiMsg: Message = {
         id: uuidv4(),
         role: Role.MODEL,
-        text: responseText,
+        text: cleanText,
         timestamp: Date.now(),
         meta,
       };
