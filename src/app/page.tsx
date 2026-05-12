@@ -95,27 +95,14 @@ export default function Home() {
     setAppViewState("home");
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
-
-    const userMsg: Message = {
-      id: uuidv4(),
-      role: Role.USER,
-      text: input,
-      timestamp: Date.now(),
-    };
-
-    const history = messages.filter((message) => !message.isGenerating);
-
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
+  const sendMessage = async (messageText: string, history: Message[]) => {
     setIsLoading(true);
     setLoadingText(t.generating);
     setFeedbackKind("sending");
     setAppViewState("generating-response");
 
     try {
-      const responseText = await sendMessageToGemini(history, userMsg.text, language, mode);
+      const responseText = await sendMessageToGemini(history, messageText, language, mode);
       const meta = parseCorelingMeta(responseText);
       const cleanText = responseText.replace(/```(?:json\s+)?coreling_meta[\s\S]*?```/, "").trim();
 
@@ -181,6 +168,46 @@ export default function Home() {
       setIsLoading(false);
       setLoadingText("");
     }
+  };
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+
+    const userMsg: Message = {
+      id: uuidv4(),
+      role: Role.USER,
+      text: input,
+      timestamp: Date.now(),
+    };
+
+    const history = messages.filter((message) => !message.isGenerating);
+
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+
+    await sendMessage(userMsg.text, history);
+  };
+
+  const handleRetry = async () => {
+    if (isLoading) return;
+
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === Role.USER);
+    if (!lastUserMsg) return;
+
+    // Remove error message if it was the last model message
+    setMessages((prev) => {
+      const lastModelMsg = [...prev].reverse().find((m) => m.role === Role.MODEL);
+      if (lastModelMsg && lastModelMsg.timestamp > lastUserMsg.timestamp) {
+        return prev.filter((m) => m.id !== lastModelMsg.id);
+      }
+      return prev;
+    });
+
+    const history = messages.filter(
+      (m) => !m.isGenerating && m.timestamp <= lastUserMsg.timestamp
+    );
+
+    await sendMessage(lastUserMsg.text, history);
   };
 
   const handleGenerateImage = async (
@@ -372,8 +399,17 @@ export default function Home() {
             </div>
 
             {feedbackText && (
-              <div className={`mb-4 rounded-2xl border px-4 py-3 text-sm ${feedbackTone}`}>
-                {feedbackText}
+              <div className={`mb-4 rounded-2xl border px-4 py-3 text-sm ${feedbackTone} flex items-center justify-between gap-3`}>
+                <span>{feedbackText}</span>
+                {feedbackKind === "response-error" && (
+                  <button
+                    onClick={handleRetry}
+                    disabled={isLoading}
+                    className="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-medium text-[#ff385c] border border-[#ff385c] transition-colors hover:bg-[#fff8f6] disabled:opacity-50"
+                  >
+                    {language === "zh" ? "重试" : "Retry"}
+                  </button>
+                )}
               </div>
             )}
 
