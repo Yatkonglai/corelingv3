@@ -355,7 +355,7 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleModeToggle}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 rounded-full px-3 py-2.5 text-xs font-medium transition-all ${
                 mode === "artisan"
                   ? "bg-[#f7f7f7] text-[#6a6a6a] hover:bg-[#ebebeb]"
                   : "bg-[#fff8f6] text-[#ff385c] hover:bg-[#ffe8e3]"
@@ -367,14 +367,14 @@ export default function Home() {
             </button>
             <button
               onClick={handleLanguageToggle}
-              className="rounded-full p-2 text-[#6a6a6a] transition-colors hover:bg-[#f7f7f7] hover:text-[#ff385c]"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-[#6a6a6a] transition-colors hover:bg-[#f7f7f7] hover:text-[#ff385c]"
               title="Switch Language"
             >
               <Globe size={20} />
             </button>
             <button
               onClick={handleClearChat}
-              className="rounded-full p-2 text-[#6a6a6a] transition-colors hover:bg-red-50 hover:text-[#c13515]"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-[#6a6a6a] transition-colors hover:bg-red-50 hover:text-[#c13515]"
               title={t.clearChat}
             >
               <Trash2 size={20} />

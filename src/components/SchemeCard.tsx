@@ -22,7 +22,7 @@ export default function SchemeCard({ scheme, language, sourceText, onGenerateIma
       </div>
       <button
         onClick={() => onGenerateImage(sourceText, scheme.heading, scheme.imagePrompt)}
-        className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 py-2 text-xs font-medium text-[#ff385c] transition-colors hover:border-[#ff385c] hover:bg-[#fff8f6]"
+        className="mt-2 inline-flex h-11 items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 text-xs font-medium text-[#ff385c] transition-colors hover:border-[#ff385c] hover:bg-[#fff8f6]"
       >
         <Sparkles size={14} />
         {language === "zh" ? "生成效果图" : "Generate visual"}

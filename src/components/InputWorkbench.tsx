@@ -55,7 +55,7 @@ export default function InputWorkbench({
         <button
           onClick={onSend}
           disabled={!input.trim() || isLoading}
-          className="absolute bottom-2 right-2 rounded-full bg-[#ff385c] p-2.5 text-white shadow-sm transition-colors hover:bg-[#e00b41] disabled:opacity-50 disabled:hover:bg-[#ff385c]"
+          className="absolute bottom-2 right-2 flex h-11 w-11 items-center justify-center rounded-full bg-[#ff385c] text-white shadow-sm transition-colors hover:bg-[#e00b41] disabled:opacity-50 disabled:hover:bg-[#ff385c]"
         >
           <Send size={18} />
         </button>
