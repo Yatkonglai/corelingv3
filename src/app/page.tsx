@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Send, Globe, Trash2, Sparkles, Gem, Wand2, Compass } from "lucide-react";
+import { Globe, Trash2, Sparkles, Gem, Wand2, Compass } from "lucide-react";
 import { Message, Role, Language, AppViewState, FeedbackKind } from "../lib/types";
 import { TRANSLATIONS } from "../lib/constants";
 import { sendMessageToGemini, generateJewelryImage } from "../lib/geminiService";
 import type { GenerationMode } from "../lib/ai/config";
 import { MODEL_PRESETS, DEFAULT_MODE } from "../lib/ai/config";
 import MessageBubble from "../components/MessageBubble";
+import HomeHero from "../components/HomeHero";
+import InputWorkbench from "../components/InputWorkbench";
 import { parseCorelingMeta, parseResultViewModel } from "../lib/resultViewModel";
 import { v4 as uuidv4 } from "uuid";
 
@@ -278,38 +280,6 @@ export default function Home() {
     }
   };
 
-  const starterPrompts =
-    language === "zh"
-      ? [
-          "我想做一个以东方婚礼为灵感的高级珠宝系列",
-          "先给我 3 个适合日常佩戴的胸针方向",
-          "把这个概念做得更适合国际设计大奖投稿",
-        ]
-      : [
-          "I want a high jewelry series inspired by an Eastern wedding.",
-          "Give me 3 brooch directions suitable for everyday wear.",
-          "Refine this concept for international design award submission.",
-        ];
-
-  const modeHint =
-    language === "zh"
-      ? mode === "artisan"
-        ? "当前模式：Artisan。更适合先澄清主题、佩戴场景与约束。"
-        : "当前模式：Muse。更适合快速推进更大胆的概念与视觉表达。"
-      : mode === "artisan"
-        ? "Current mode: Artisan. Best for clarifying theme, wearing context, and constraints first."
-        : "Current mode: Muse. Best for pushing bolder concepts and stronger visual direction.";
-
-  const heroTitle =
-    language === "zh"
-      ? "让珠宝概念更快变成可读、可选、可推进的设计方案"
-      : "Turn jewelry concepts into readable, actionable design directions";
-
-  const heroDescription =
-    language === "zh"
-      ? "从灵感澄清、方案生成到效果图推进，CoreLING 帮你更快得到结构清晰、便于比较和继续深化的设计输出。"
-      : "From concept clarification to structured schemes and visual generation, CoreLING helps you move faster with clearer outputs that are easier to compare and refine.";
-
   const feedbackText =
     feedbackKind === "sending"
       ? loadingText
@@ -389,7 +359,15 @@ export default function Home() {
         <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <section className="min-w-0">
             <div className="mb-4 rounded-2xl border border-[#ebebeb] bg-white p-4 shadow-sm">
-              <p className="text-sm font-medium text-[#222222]">{modeHint}</p>
+              <p className="text-sm font-medium text-[#222222]">
+                {language === "zh"
+                  ? mode === "artisan"
+                    ? "当前模式：Artisan。更适合先澄清主题、佩戴场景与约束。"
+                    : "当前模式：Muse。更适合快速推进更大胆的概念与视觉表达。"
+                  : mode === "artisan"
+                    ? "Current mode: Artisan. Best for clarifying theme, wearing context, and constraints first."
+                    : "Current mode: Muse. Best for pushing bolder concepts and stronger visual direction."}
+              </p>
             </div>
 
             {feedbackText && (
@@ -399,33 +377,7 @@ export default function Home() {
             )}
 
             {showHomeHero ? (
-              <div className="rounded-3xl border border-[#ebebeb] bg-white p-6 shadow-sm md:p-8">
-                <div className="max-w-3xl">
-                  <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#fff1f4] px-3 py-1 text-xs font-medium text-[#ff385c]">
-                    <Sparkles size={14} />
-                    {language === "zh" ? "AI 高级珠宝设计工作台" : "AI high jewelry design workbench"}
-                  </div>
-                  <h2 className="text-3xl font-bold leading-tight text-[#222222] md:text-4xl">{heroTitle}</h2>
-                  <p className="mt-4 max-w-2xl text-base leading-7 text-[#5f5f5f]">{heroDescription}</p>
-                </div>
-
-                <div className="mt-8">
-                  <p className="mb-3 text-sm font-semibold text-[#222222]">
-                    {language === "zh" ? "推荐起手方式" : "Suggested ways to start"}
-                  </p>
-                  <div className="flex flex-col gap-3">
-                    {starterPrompts.map((prompt) => (
-                      <button
-                        key={prompt}
-                        onClick={() => setInput(prompt)}
-                        className="rounded-2xl border border-[#ebebeb] bg-[#fcfcfc] px-4 py-3 text-left text-sm text-[#444444] transition-colors hover:border-[#ffb7c4] hover:bg-[#fff8f6]"
-                      >
-                        {prompt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <HomeHero language={language} mode={mode} onSelectPrompt={setInput} />
             ) : (
               <div className="space-y-6">
                 {showResultPanel && latestResult && (
@@ -545,33 +497,15 @@ export default function Home() {
       </main>
 
       <footer className="sticky bottom-0 flex-none border-t border-[#ebebeb] bg-white p-4">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-2 text-sm text-[#6a6a6a]">{modeHint}</div>
-          <div className="relative">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend();
-                }
-              }}
-              placeholder={t.inputPlaceholder}
-              className="min-h-[56px] max-h-32 w-full resize-none rounded-[28px] border border-[#ebebeb] bg-[#f7f7f7] py-3.5 pl-5 pr-14 text-base text-[#222222] placeholder-[#929292] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#ff385c]"
-              rows={1}
-              disabled={isLoading}
-            />
-            <button
-              onClick={handleSend}
-              disabled={!input.trim() || isLoading}
-              className="absolute bottom-2 right-2 rounded-full bg-[#ff385c] p-2.5 text-white shadow-sm transition-colors hover:bg-[#e00b41] disabled:opacity-50 disabled:hover:bg-[#ff385c]"
-            >
-              <Send size={18} />
-            </button>
-          </div>
-          <div className="mt-2 text-center text-[11px] text-[#929292]">Powered by Gemini 2.0 • GEMMA Methodology</div>
-        </div>
+        <InputWorkbench
+          input={input}
+          onChange={setInput}
+          onSend={handleSend}
+          isLoading={isLoading}
+          language={language}
+          mode={mode}
+          placeholder={t.inputPlaceholder}
+        />
       </footer>
     </div>
   );
