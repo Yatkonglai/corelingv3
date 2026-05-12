@@ -1,9 +1,11 @@
 "use client";
 
-import ReactMarkdown from 'react-markdown';
-import { Message, Role, Translation } from '../lib/types';
-import { Sparkles, Bot, User, Palette } from 'lucide-react';
-import remarkGfm from 'remark-gfm';
+import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { Message, Role, Translation } from "../lib/types";
+import { Sparkles, Bot, User, Palette, ChevronDown, ChevronUp, ZoomIn, Download } from "lucide-react";
+import remarkGfm from "remark-gfm";
+import ImageLightbox from "./ImageLightbox";
 
 interface MessageBubbleProps {
   message: Message;
@@ -13,23 +15,46 @@ interface MessageBubbleProps {
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({ message, translations, onGenerateImage }) => {
   const isUser = message.role === Role.USER;
+  const [expanded, setExpanded] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const schemeRegex = /(?:###\s*)?(?:Scheme|方案)\s*([A-Z0-9]+)/gi;
   const schemesFound = Array.from(message.text.matchAll(schemeRegex)).map(m => m[0].replace(/###\s*/, '').trim());
   const uniqueSchemes = [...new Set(schemesFound)];
+  const hasStructuredResult = uniqueSchemes.length > 0 && !isUser;
 
   const canGenerate = !isUser && message.text.length > 50 && !message.isGenerating && !message.imageUrl;
 
   // Helper: get imagePrompt for a scheme from meta
   const getImagePrompt = (schemeName: string): string | undefined => {
     if (!message.meta?.schemes) return undefined;
-    // Extract scheme ID (e.g., "Scheme A" -> "A")
     const match = schemeName.match(/[A-Z0-9]+/);
     if (!match) return undefined;
     const schemeId = match[0];
     const scheme = message.meta.schemes.find(s => s.id === schemeId);
     return scheme?.imagePrompt;
   };
+
+  const handleDownloadImage = async () => {
+    if (!message.imageUrl) return;
+    try {
+      const response = await fetch(message.imageUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `coreling-design-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download failed:", err);
+    }
+  };
+
+  // For structured results, show collapsed view by default
+  const showCollapsed = hasStructuredResult && !expanded && !message.imageUrl;
 
   return (
     <div className={`flex w-full mb-6 ${isUser ? 'justify-end' : 'justify-start'}`}>
@@ -49,38 +74,94 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, translations, on
                 : 'bg-white border border-[#ebebeb] text-[#222222] rounded-tl-none'
               }`}
           >
-            {/* Markdown Text */}
-            <div className={`markdown-body ${isUser ? 'text-white' : 'text-[#222222]'}`}>
-               <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  h3: ({node, ...props}) => <h3 className="text-lg font-bold mt-6 mb-3 text-[#ff385c] border-b border-[#ebebeb] pb-2" {...props} />,
+            {/* Collapsed view for structured results */}
+            {showCollapsed ? (
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-[#ff385c]">
+                  {uniqueSchemes.length} {translations.selectScheme || "schemes generated"}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {uniqueSchemes.map((scheme) => (
+                    <span key={scheme} className="rounded-full bg-[#fff1f4] px-2.5 py-1 text-xs font-medium text-[#ff385c]">
+                      {scheme}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setExpanded(true)}
+                  className="flex items-center gap-1 text-xs font-medium text-[#929292] hover:text-[#ff385c] transition-colors"
+                >
+                  <ChevronDown size={14} />
+                  View original
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Markdown Text */}
+                <div className={`markdown-body ${isUser ? 'text-white' : 'text-[#222222]'}`}>
+                   <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h3: ({node, ...props}) => <h3 className="text-lg font-bold mt-6 mb-3 text-[#ff385c] border-b border-[#ebebeb] pb-2" {...props} />,
 
-                  strong: ({node, ...props}) => <strong className="font-bold text-[#222222]" {...props} />,
-                  ul: ({node, ...props}) => <ul className="list-disc ml-4 my-2 space-y-1" {...props} />,
-                  li: ({node, ...props}) => <li className="pl-1" {...props} />,
-                  p: ({node, ...props}) => <p className="mb-3 last:mb-0 whitespace-pre-line" {...props} />,
+                      strong: ({node, ...props}) => <strong className="font-bold text-[#222222]" {...props} />,
+                      ul: ({node, ...props}) => <ul className="list-disc ml-4 my-2 space-y-1" {...props} />,
+                      li: ({node, ...props}) => <li className="pl-1" {...props} />,
+                      p: ({node, ...props}) => <p className="mb-3 last:mb-0 whitespace-pre-line" {...props} />,
 
-                  table: ({node, ...props}) => (
-                    <div className="overflow-x-auto my-4 rounded-lg border border-[#ebebeb] shadow-sm">
-                      <table className="min-w-full text-left text-sm border-collapse" {...props} />
-                    </div>
-                  ),
-                  thead: ({node, ...props}) => <thead className="bg-[#f7f7f7] text-[#222222] font-bold" {...props} />,
-                  tbody: ({node, ...props}) => <tbody className="bg-white divide-y divide-[#ebebeb]" {...props} />,
-                  tr: ({node, ...props}) => <tr className="hover:bg-[#f7f7f7] transition-colors" {...props} />,
-                  th: ({node, ...props}) => <th className="p-3 border-r border-[#ebebeb] last:border-r-0 whitespace-nowrap" {...props} />,
-                  td: ({node, ...props}) => <td className="p-3 border-r border-[#ebebeb] last:border-r-0 align-top leading-relaxed" {...props} />,
-                }}
-               >
-                 {message.text}
-               </ReactMarkdown>
-            </div>
+                      table: ({node, ...props}) => (
+                        <div className="overflow-x-auto my-4 rounded-lg border border-[#ebebeb] shadow-sm">
+                          <table className="min-w-full text-left text-sm border-collapse" {...props} />
+                        </div>
+                      ),
+                      thead: ({node, ...props}) => <thead className="bg-[#f7f7f7] text-[#222222] font-bold" {...props} />,
+                      tbody: ({node, ...props}) => <tbody className="bg-white divide-y divide-[#ebebeb]" {...props} />,
+                      tr: ({node, ...props}) => <tr className="hover:bg-[#f7f7f7] transition-colors" {...props} />,
+                      th: ({node, ...props}) => <th className="p-3 border-r border-[#ebebeb] last:border-r-0 whitespace-nowrap" {...props} />,
+                      td: ({node, ...props}) => <td className="p-3 border-r border-[#ebebeb] last:border-r-0 align-top leading-relaxed" {...props} />,
+                    }}
+                   >
+                     {message.text}
+                   </ReactMarkdown>
+                </div>
+
+                {/* Collapse toggle when expanded */}
+                {hasStructuredResult && (
+                  <button
+                    onClick={() => setExpanded(false)}
+                    className="mt-3 flex items-center gap-1 text-xs font-medium text-[#929292] hover:text-[#ff385c] transition-colors"
+                  >
+                    <ChevronUp size={14} />
+                    Hide original
+                  </button>
+                )}
+              </>
+            )}
 
             {/* Generated Image */}
             {message.imageUrl && (
               <div className="mt-4 rounded-lg overflow-hidden border border-[#ebebeb] shadow-md relative group">
-                <img src={message.imageUrl} alt="Generated Jewelry Design" className="w-full h-auto max-w-md object-cover" />
+                <button onClick={() => setLightboxOpen(true)} className="block w-full">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={message.imageUrl} alt="Generated Jewelry Design" className="w-full h-auto max-w-md object-cover cursor-zoom-in" />
+                </button>
+                {/* Image actions overlay */}
+                <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => setLightboxOpen(true)}
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                    title="Zoom"
+                  >
+                    <ZoomIn size={16} />
+                  </button>
+                  <button
+                    onClick={handleDownloadImage}
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                    title="Download"
+                  >
+                    <Download size={16} />
+                  </button>
+                </div>
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="text-white text-xs">AI Generated Visualization</span>
                 </div>
@@ -118,6 +199,15 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, translations, on
           )}
         </div>
       </div>
+
+      {/* Lightbox */}
+      {lightboxOpen && message.imageUrl && (
+        <ImageLightbox
+          imageUrl={message.imageUrl}
+          caption={message.meta?.schemes?.[0]?.title}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </div>
   );
 };
