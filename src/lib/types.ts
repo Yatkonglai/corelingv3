@@ -13,6 +13,22 @@ export interface Message {
   meta?: SchemeMeta;
 }
 
+export type AppViewState =
+  | 'home'
+  | 'conversation'
+  | 'generating-response'
+  | 'result-ready'
+  | 'generating-image'
+  | 'recoverable-error';
+
+export type FeedbackKind =
+  | 'idle'
+  | 'sending'
+  | 'response-error'
+  | 'image-pending'
+  | 'image-error'
+  | 'image-success';
+
 export type Language = 'en' | 'zh';
 
 export interface Translation {

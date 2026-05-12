@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Send, Globe, Trash2, Sparkles, Gem, Wand2, Compass } from "lucide-react";
-import { Message, Role, Language, SchemeMeta } from "../lib/types";
+import { Message, Role, Language, AppViewState, FeedbackKind } from "../lib/types";
 import { TRANSLATIONS } from "../lib/constants";
 import { sendMessageToGemini, generateJewelryImage } from "../lib/geminiService";
 import type { GenerationMode } from "../lib/ai/config";
 import { MODEL_PRESETS, DEFAULT_MODE } from "../lib/ai/config";
 import MessageBubble from "../components/MessageBubble";
+import { parseCorelingMeta, parseResultViewModel } from "../lib/resultViewModel";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
@@ -17,73 +18,78 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [mode, setMode] = useState<GenerationMode>(DEFAULT_MODE);
+  const [appViewState, setAppViewState] = useState<AppViewState>("home");
+  const [feedbackKind, setFeedbackKind] = useState<FeedbackKind>("idle");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const t = TRANSLATIONS[language];
 
-  // Initialize with welcome message
+  const latestStructuredMessage = useMemo(
+    () =>
+      [...messages]
+        .reverse()
+        .find(
+          (message) =>
+            message.role === Role.MODEL &&
+            !message.isGenerating &&
+            parseResultViewModel(message).hasStructuredResult
+        ),
+    [messages]
+  );
+
+  const latestResult = useMemo(
+    () => (latestStructuredMessage ? parseResultViewModel(latestStructuredMessage) : undefined),
+    [latestStructuredMessage]
+  );
+
   useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([
-        {
-          id: uuidv4(),
-          role: Role.MODEL,
-          text: t.welcomeMessage,
-          timestamp: Date.now(),
-        },
-      ]);
+    if (isLoading && feedbackKind === "sending") {
+      setAppViewState("generating-response");
+      return;
     }
-  }, [language, messages.length, t.welcomeMessage]);
 
-  // Auto-scroll to bottom
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+    if (isLoading && feedbackKind === "image-pending") {
+      setAppViewState("generating-image");
+      return;
+    }
+
+    if (messages.length === 0) {
+      setAppViewState("home");
+      return;
+    }
+
+    if (feedbackKind === "response-error") {
+      setAppViewState("recoverable-error");
+      return;
+    }
+
+    if (latestResult?.hasStructuredResult) {
+      setAppViewState("result-ready");
+      return;
+    }
+
+    setAppViewState("conversation");
+  }, [feedbackKind, isLoading, latestResult, messages.length]);
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
   const handleLanguageToggle = () => {
     setLanguage((prev) => (prev === "en" ? "zh" : "en"));
   };
 
-  const handleClearChat = () => {
-    setMessages([
-      {
-        id: uuidv4(),
-        role: Role.MODEL,
-        text: t.welcomeMessage,
-        timestamp: Date.now(),
-      },
-    ]);
-  };
-
   const handleModeToggle = () => {
     setMode((prev) => (prev === "artisan" ? "muse" : "artisan"));
   };
 
-  /**
-   * Parse coreling_meta JSON block from AI response.
-   * Extracts hidden imagePrompts for each scheme.
-   */
-  const parseCorelingMeta = (text: string): SchemeMeta | undefined => {
-    try {
-      const metaMatch = text.match(/```json coreling_meta\n([\s\S]*?)\n```/);
-      if (!metaMatch) return undefined;
-
-      const meta: SchemeMeta = JSON.parse(metaMatch[1]);
-      if (!meta.schemes || !Array.isArray(meta.schemes)) return undefined;
-
-      // Validate each scheme has required fields
-      meta.schemes = meta.schemes.filter(
-        (s) => s.id && s.title && s.imagePrompt
-      );
-
-      return meta.schemes.length > 0 ? meta : undefined;
-    } catch {
-      return undefined;
-    }
+  const handleClearChat = () => {
+    setMessages([]);
+    setInput("");
+    setIsLoading(false);
+    setLoadingText("");
+    setFeedbackKind("idle");
+    setAppViewState("home");
   };
 
   const handleSend = async () => {
@@ -96,25 +102,19 @@ export default function Home() {
       timestamp: Date.now(),
     };
 
+    const history = messages.filter((message) => !message.isGenerating);
+
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setIsLoading(true);
     setLoadingText(t.generating);
+    setFeedbackKind("sending");
+    setAppViewState("generating-response");
 
     try {
-      const responseText = await sendMessageToGemini(
-        messages,
-        userMsg.text,
-        language,
-        mode
-      );
-
+      const responseText = await sendMessageToGemini(history, userMsg.text, language, mode);
       const meta = parseCorelingMeta(responseText);
-
-      // Strip hidden coreling_meta block from user-visible text
-      const cleanText = responseText
-        .replace(/```(?:json\s+)?coreling_meta[\s\S]*?```/, "")
-        .trim();
+      const cleanText = responseText.replace(/```(?:json\s+)?coreling_meta[\s\S]*?```/, "").trim();
 
       const aiMsg: Message = {
         id: uuidv4(),
@@ -125,12 +125,11 @@ export default function Home() {
       };
 
       setMessages((prev) => [...prev, aiMsg]);
+      setFeedbackKind("idle");
     } catch (error: any) {
       console.error(error);
 
       const errorCode = error?.code || "unknown";
-      const isZh = language === "zh";
-
       const errorMessages: Record<string, { en: string; zh: string }> = {
         timeout: {
           en: "⏱ The Atelier is refining your request. Please try again in a moment.",
@@ -138,7 +137,7 @@ export default function Home() {
         },
         rate_limit: {
           en: "🌸 The Atelier is experiencing high demand. Please wait a moment.",
-          zh: "🌸 工坊 demand 较高，请稍等片刻。",
+          zh: "🌸 工坊当前请求较多，请稍等片刻。",
         },
         bad_request: {
           en: "⚠️ This request cannot be processed. Please check your input.",
@@ -163,15 +162,18 @@ export default function Home() {
       };
 
       const msg = errorMessages[errorCode] || errorMessages.unknown;
-      const errorText = isZh ? msg.zh : msg.en;
+      const errorText = language === "zh" ? msg.zh : msg.en;
 
-      const errorMsg: Message = {
-        id: uuidv4(),
-        role: Role.MODEL,
-        text: errorText,
-        timestamp: Date.now(),
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: uuidv4(),
+          role: Role.MODEL,
+          text: errorText,
+          timestamp: Date.now(),
+        },
+      ]);
+      setFeedbackKind("response-error");
     } finally {
       setIsLoading(false);
       setLoadingText("");
@@ -188,44 +190,49 @@ export default function Home() {
     const tempId = uuidv4();
     setIsLoading(true);
     setLoadingText(t.generating);
+    setFeedbackKind("image-pending");
+    setAppViewState("generating-image");
 
-    const statusMsg: Message = {
-      id: tempId,
-      role: Role.MODEL,
-      text:
-        language === "en"
-          ? `*Initiating visual generation protocol${schemeName ? ` for ${schemeName}` : ""}...*`
-          : `*正在启动视觉生成协议${schemeName ? ` (${schemeName})` : ""}...*`,
-      timestamp: Date.now(),
-      isGenerating: true,
-    };
-    setMessages((prev) => [...prev, statusMsg]);
+    const statusText =
+      language === "en"
+        ? `*Initiating visual generation protocol${schemeName ? ` for ${schemeName}` : ""}...*`
+        : `*正在启动视觉生成协议${schemeName ? ` (${schemeName})` : ""}...*`;
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: tempId,
+        role: Role.MODEL,
+        text: statusText,
+        timestamp: Date.now(),
+        isGenerating: true,
+      },
+    ]);
 
     try {
       const imageUrl = await generateJewelryImage(sourceText, schemeName, imagePrompt);
 
       setMessages((prev) =>
-        prev.map((msg) => {
-          if (msg.id === tempId) {
-            return {
-              ...msg,
-              text:
-                language === "en"
-                  ? `Here is the visual rendering of the design concept${schemeName ? ` (${schemeName})` : ""}:`
-                  : `这是设计概念的视觉渲染图${schemeName ? ` (${schemeName})` : ""}：`,
-              imageUrl: imageUrl,
-              isGenerating: false,
-            };
-          }
-          return msg;
-        })
+        prev.map((msg) =>
+          msg.id === tempId
+            ? {
+                ...msg,
+                text:
+                  language === "en"
+                    ? `Here is the visual rendering of the design concept${schemeName ? ` (${schemeName})` : ""}:`
+                    : `这是设计概念的视觉渲染图${schemeName ? ` (${schemeName})` : ""}：`,
+                imageUrl,
+                isGenerating: false,
+              }
+            : msg
+        )
       );
+      setFeedbackKind("image-success");
+      setAppViewState("result-ready");
     } catch (error: any) {
       console.error(error);
 
       const errorCode = error?.code || "unknown";
-      const isZh = language === "zh";
-
       const imageErrorMessages: Record<string, { en: string; zh: string }> = {
         timeout: {
           en: "⏱ Visual generation timed out. Please try again.",
@@ -250,79 +257,126 @@ export default function Home() {
       };
 
       const msg = imageErrorMessages[errorCode] || imageErrorMessages.unknown;
-      const errorText = isZh ? msg.zh : msg.en;
+      const errorText = language === "zh" ? msg.zh : msg.en;
 
       setMessages((prev) =>
-        prev.map((msg) => {
-          if (msg.id === tempId) {
-            return {
-              ...msg,
-              text: errorText,
-              isGenerating: false,
-            };
-          }
-          return msg;
-        })
+        prev.map((message) =>
+          message.id === tempId
+            ? {
+                ...message,
+                text: errorText,
+                isGenerating: false,
+              }
+            : message
+        )
       );
+      setFeedbackKind("image-error");
+      setAppViewState("result-ready");
     } finally {
       setIsLoading(false);
       setLoadingText("");
     }
   };
 
+  const starterPrompts =
+    language === "zh"
+      ? [
+          "我想做一个以东方婚礼为灵感的高级珠宝系列",
+          "先给我 3 个适合日常佩戴的胸针方向",
+          "把这个概念做得更适合国际设计大奖投稿",
+        ]
+      : [
+          "I want a high jewelry series inspired by an Eastern wedding.",
+          "Give me 3 brooch directions suitable for everyday wear.",
+          "Refine this concept for international design award submission.",
+        ];
+
+  const modeHint =
+    language === "zh"
+      ? mode === "artisan"
+        ? "当前模式：Artisan。更适合先澄清主题、佩戴场景与约束。"
+        : "当前模式：Muse。更适合快速推进更大胆的概念与视觉表达。"
+      : mode === "artisan"
+        ? "Current mode: Artisan. Best for clarifying theme, wearing context, and constraints first."
+        : "Current mode: Muse. Best for pushing bolder concepts and stronger visual direction.";
+
+  const heroTitle =
+    language === "zh"
+      ? "让珠宝概念更快变成可读、可选、可推进的设计方案"
+      : "Turn jewelry concepts into readable, actionable design directions";
+
+  const heroDescription =
+    language === "zh"
+      ? "从灵感澄清、方案生成到效果图推进，CoreLING 帮你更快得到结构清晰、便于比较和继续深化的设计输出。"
+      : "From concept clarification to structured schemes and visual generation, CoreLING helps you move faster with clearer outputs that are easier to compare and refine.";
+
+  const feedbackText =
+    feedbackKind === "sending"
+      ? loadingText
+      : feedbackKind === "response-error"
+        ? language === "zh"
+          ? "本轮生成未完成，请直接重试或调整输入。"
+          : "This response did not complete. Retry or adjust your prompt."
+        : feedbackKind === "image-pending"
+          ? loadingText
+          : feedbackKind === "image-error"
+            ? language === "zh"
+              ? "效果图生成失败，但当前方案仍保留。"
+              : "Image generation failed, but your current scheme remains available."
+            : feedbackKind === "image-success"
+              ? language === "zh"
+                ? "效果图已生成，可继续比较或深化方案。"
+                : "Visual generated. You can compare or refine further."
+              : "";
+
+  const feedbackTone =
+    feedbackKind === "response-error" || feedbackKind === "image-error"
+      ? "text-[#c13515] bg-red-50 border-red-200"
+      : feedbackKind === "sending" || feedbackKind === "image-pending"
+        ? "text-[#ff385c] bg-[#fff8f6] border-[#ffd8cf]"
+        : "text-[#1f7a4f] bg-green-50 border-green-200";
+
+  const showHomeHero = appViewState === "home";
+  const showResultPanel = Boolean(latestResult?.hasStructuredResult);
+  const resultSourceText = latestStructuredMessage?.text ?? "";
+
   return (
-    <div className="flex flex-col h-screen bg-[#f7f7f7]">
-      {/* Header - Airbnb style */}
-      <header className="flex-none bg-white border-b border-[#ebebeb] px-4 py-3 shadow-sm z-10">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+    <div className="flex min-h-screen flex-col bg-[#f7f7f7]">
+      <header className="z-10 flex-none border-b border-[#ebebeb] bg-white px-4 py-3 shadow-sm">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="bg-[#ff385c] p-2 rounded-lg text-white">
+            <div className="rounded-lg bg-[#ff385c] p-2 text-white">
               <Gem size={24} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-[#222222] tracking-tight">
-                {t.title}
-              </h1>
-              <p className="text-xs text-[#ff385c] font-medium">{t.subtitle}</p>
+              <h1 className="text-xl font-bold tracking-tight text-[#222222]">{t.title}</h1>
+              <p className="text-xs font-medium text-[#ff385c]">{t.subtitle}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Mode Toggle */}
             <button
               onClick={handleModeToggle}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
                 mode === "artisan"
                   ? "bg-[#f7f7f7] text-[#6a6a6a] hover:bg-[#ebebeb]"
                   : "bg-[#fff8f6] text-[#ff385c] hover:bg-[#ffe8e3]"
               }`}
-              title={
-                mode === "artisan"
-                  ? MODEL_PRESETS.artisan.description
-                  : MODEL_PRESETS.muse.description
-              }
+              title={mode === "artisan" ? MODEL_PRESETS.artisan.description : MODEL_PRESETS.muse.description}
             >
-              {mode === "artisan" ? (
-                <Compass size={14} />
-              ) : (
-                <Wand2 size={14} />
-              )}
-              <span>
-                {language === "zh"
-                  ? MODEL_PRESETS[mode].labelZh
-                  : MODEL_PRESETS[mode].label}
-              </span>
+              {mode === "artisan" ? <Compass size={14} /> : <Wand2 size={14} />}
+              <span>{language === "zh" ? MODEL_PRESETS[mode].labelZh : MODEL_PRESETS[mode].label}</span>
             </button>
             <button
               onClick={handleLanguageToggle}
-              className="p-2 text-[#6a6a6a] hover:text-[#ff385c] hover:bg-[#f7f7f7] rounded-full transition-colors"
+              className="rounded-full p-2 text-[#6a6a6a] transition-colors hover:bg-[#f7f7f7] hover:text-[#ff385c]"
               title="Switch Language"
             >
               <Globe size={20} />
             </button>
             <button
               onClick={handleClearChat}
-              className="p-2 text-[#6a6a6a] hover:text-[#c13515] hover:bg-red-50 rounded-full transition-colors"
+              className="rounded-full p-2 text-[#6a6a6a] transition-colors hover:bg-red-50 hover:text-[#c13515]"
               title={t.clearChat}
             >
               <Trash2 size={20} />
@@ -331,56 +385,192 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Chat Area */}
-      <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-[#f7f7f7]/50">
-        <div className="max-w-3xl mx-auto">
-          {messages.map((msg) => (
-            <MessageBubble
-              key={msg.id}
-              message={msg}
-              translations={t}
-              onGenerateImage={handleGenerateImage}
-            />
-          ))}
-
-          {isLoading && (
-            <div className="flex items-center gap-2 text-[#ff385c] text-sm ml-12 animate-pulse">
-              <Sparkles size={16} className="animate-spin" />
-              <span>{loadingText}</span>
+      <main className="flex-1 overflow-y-auto px-4 py-4 md:px-6 md:py-6">
+        <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <section className="min-w-0">
+            <div className="mb-4 rounded-2xl border border-[#ebebeb] bg-white p-4 shadow-sm">
+              <p className="text-sm font-medium text-[#222222]">{modeHint}</p>
             </div>
-          )}
 
-          <div ref={messagesEndRef} />
+            {feedbackText && (
+              <div className={`mb-4 rounded-2xl border px-4 py-3 text-sm ${feedbackTone}`}>
+                {feedbackText}
+              </div>
+            )}
+
+            {showHomeHero ? (
+              <div className="rounded-3xl border border-[#ebebeb] bg-white p-6 shadow-sm md:p-8">
+                <div className="max-w-3xl">
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#fff1f4] px-3 py-1 text-xs font-medium text-[#ff385c]">
+                    <Sparkles size={14} />
+                    {language === "zh" ? "AI 高级珠宝设计工作台" : "AI high jewelry design workbench"}
+                  </div>
+                  <h2 className="text-3xl font-bold leading-tight text-[#222222] md:text-4xl">{heroTitle}</h2>
+                  <p className="mt-4 max-w-2xl text-base leading-7 text-[#5f5f5f]">{heroDescription}</p>
+                </div>
+
+                <div className="mt-8">
+                  <p className="mb-3 text-sm font-semibold text-[#222222]">
+                    {language === "zh" ? "推荐起手方式" : "Suggested ways to start"}
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    {starterPrompts.map((prompt) => (
+                      <button
+                        key={prompt}
+                        onClick={() => setInput(prompt)}
+                        className="rounded-2xl border border-[#ebebeb] bg-[#fcfcfc] px-4 py-3 text-left text-sm text-[#444444] transition-colors hover:border-[#ffb7c4] hover:bg-[#fff8f6]"
+                      >
+                        {prompt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {showResultPanel && latestResult && (
+                  <div className="rounded-3xl border border-[#ebebeb] bg-white p-5 shadow-sm lg:hidden">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <div>
+                        <h2 className="text-lg font-semibold text-[#222222]">
+                          {language === "zh" ? "本轮结果" : "Current result"}
+                        </h2>
+                        <p className="mt-1 text-sm text-[#6a6a6a]">
+                          {language === "zh"
+                            ? "先快速浏览方案，再选择生成效果图或继续深化。"
+                            : "Review the schemes first, then generate visuals or refine further."}
+                        </p>
+                      </div>
+                      <span className="rounded-full bg-[#fff1f4] px-3 py-1 text-xs font-medium text-[#ff385c]">
+                        {latestResult.schemes.length} {language === "zh" ? "个方案" : "schemes"}
+                      </span>
+                    </div>
+                    <div className="space-y-3">
+                      {latestResult.schemes.map((scheme) => (
+                        <div key={scheme.id} className="rounded-2xl border border-[#ebebeb] p-4">
+                          <div className="mb-2 flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-semibold text-[#222222]">{scheme.heading}</p>
+                              {scheme.title && <p className="text-sm text-[#6a6a6a]">{scheme.title}</p>}
+                            </div>
+                            <span className="rounded-full bg-[#f7f7f7] px-2.5 py-1 text-xs text-[#6a6a6a]">{scheme.id}</span>
+                          </div>
+                          <button
+                            onClick={() => handleGenerateImage(resultSourceText, scheme.heading, scheme.imagePrompt)}
+                            className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 py-2 text-xs font-medium text-[#ff385c] transition-colors hover:border-[#ff385c] hover:bg-[#fff8f6]"
+                          >
+                            <Sparkles size={14} />
+                            {language === "zh" ? "生成效果图" : "Generate visual"}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  {messages.map((msg) => (
+                    <MessageBubble
+                      key={msg.id}
+                      message={msg}
+                      translations={t}
+                      onGenerateImage={handleGenerateImage}
+                    />
+                  ))}
+
+                  {isLoading && feedbackKind === "sending" && (
+                    <div className="ml-12 flex items-center gap-2 text-sm text-[#ff385c] animate-pulse">
+                      <Sparkles size={16} className="animate-spin" />
+                      <span>{loadingText}</span>
+                    </div>
+                  )}
+
+                  <div ref={messagesEndRef} />
+                </div>
+              </div>
+            )}
+          </section>
+
+          <aside className="hidden lg:block">
+            {showResultPanel && latestResult ? (
+              <div className="sticky top-6 rounded-3xl border border-[#ebebeb] bg-white p-5 shadow-sm">
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold text-[#222222]">
+                    {language === "zh" ? "本轮结果" : "Current result"}
+                  </h2>
+                  <p className="mt-1 text-sm leading-6 text-[#6a6a6a]">
+                    {latestResult.introMarkdown ||
+                      (language === "zh"
+                        ? "已识别到结构化方案。先快速浏览，再决定要出图或继续深化哪个方向。"
+                        : "A structured result was detected. Review first, then decide which direction to visualize or refine.")}
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {latestResult.schemes.map((scheme) => (
+                    <div key={scheme.id} className="rounded-2xl border border-[#ebebeb] p-4">
+                      <div className="mb-2 flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-semibold text-[#222222]">{scheme.heading}</p>
+                          {scheme.title && <p className="text-sm text-[#6a6a6a]">{scheme.title}</p>}
+                        </div>
+                        <span className="rounded-full bg-[#f7f7f7] px-2.5 py-1 text-xs text-[#6a6a6a]">{scheme.id}</span>
+                      </div>
+                      <button
+                        onClick={() => handleGenerateImage(resultSourceText, scheme.heading, scheme.imagePrompt)}
+                        className="inline-flex items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 py-2 text-xs font-medium text-[#ff385c] transition-colors hover:border-[#ff385c] hover:bg-[#fff8f6]"
+                      >
+                        <Sparkles size={14} />
+                        {language === "zh" ? "生成效果图" : "Generate visual"}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-4 rounded-2xl bg-[#f7f7f7] px-4 py-3 text-xs leading-6 text-[#6a6a6a]">
+                  {language === "zh"
+                    ? "原始完整内容仍保留在对话区，当前侧栏只负责帮助你更快识别方案与下一步动作。"
+                    : "The full original content remains in the conversation area. This panel only helps you identify schemes and next actions faster."}
+                </div>
+              </div>
+            ) : (
+              <div className="sticky top-6 rounded-3xl border border-dashed border-[#d9d9d9] bg-white/70 p-5 text-sm leading-6 text-[#7a7a7a]">
+                {language === "zh"
+                  ? "结果面板会在识别到结构化方案后显示。当前你可以继续输入需求，或先从首页推荐提示开始。"
+                  : "The result panel appears once a structured scheme output is detected. You can keep typing, or start from one of the suggested prompts."}
+              </div>
+            )}
+          </aside>
         </div>
       </main>
 
-      {/* Input Area - Airbnb pill style */}
-      <footer className="flex-none bg-white border-t border-[#ebebeb] p-4">
-        <div className="max-w-3xl mx-auto relative">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSend();
-              }
-            }}
-            placeholder={t.inputPlaceholder}
-            className="w-full pl-5 pr-14 py-3.5 bg-[#f7f7f7] border border-[#ebebeb] rounded-full focus:outline-none focus:ring-2 focus:ring-[#ff385c] focus:bg-white resize-none text-[#222222] placeholder-[#929292] max-h-32 min-h-[56px] text-base"
-            rows={1}
-            disabled={isLoading}
-          />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading}
-            className="absolute right-2 bottom-2 p-2.5 bg-[#ff385c] hover:bg-[#e00b41] disabled:opacity-50 disabled:hover:bg-[#ff385c] text-white rounded-full transition-colors shadow-sm"
-          >
-            <Send size={18} />
-          </button>
-        </div>
-        <div className="text-center mt-2 text-[11px] text-[#929292]">
-          Powered by Gemini 2.0 • GEMMA Methodology
+      <footer className="sticky bottom-0 flex-none border-t border-[#ebebeb] bg-white p-4">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-2 text-sm text-[#6a6a6a]">{modeHint}</div>
+          <div className="relative">
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+              placeholder={t.inputPlaceholder}
+              className="min-h-[56px] max-h-32 w-full resize-none rounded-[28px] border border-[#ebebeb] bg-[#f7f7f7] py-3.5 pl-5 pr-14 text-base text-[#222222] placeholder-[#929292] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#ff385c]"
+              rows={1}
+              disabled={isLoading}
+            />
+            <button
+              onClick={handleSend}
+              disabled={!input.trim() || isLoading}
+              className="absolute bottom-2 right-2 rounded-full bg-[#ff385c] p-2.5 text-white shadow-sm transition-colors hover:bg-[#e00b41] disabled:opacity-50 disabled:hover:bg-[#ff385c]"
+            >
+              <Send size={18} />
+            </button>
+          </div>
+          <div className="mt-2 text-center text-[11px] text-[#929292]">Powered by Gemini 2.0 • GEMMA Methodology</div>
         </div>
       </footer>
     </div>
