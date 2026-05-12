@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Sparkles, Heart, ChevronDown, ChevronUp } from "lucide-react";
 import { ParsedSchemeSection } from "../lib/resultViewModel";
+import { isFavorite, toggleFavorite } from "../lib/favorites";
 
 interface SchemeCardProps {
   scheme: ParsedSchemeSection;
@@ -19,7 +20,7 @@ function stripHeading(markdown: string): string {
 
 export default function SchemeCard({ scheme, language, sourceText, onGenerateImage }: SchemeCardProps) {
   const [expanded, setExpanded] = useState(true);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(() => isFavorite(scheme.id));
 
   const bodyMarkdown = stripHeading(scheme.markdown);
 
@@ -33,7 +34,10 @@ export default function SchemeCard({ scheme, language, sourceText, onGenerateIma
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <button
-            onClick={() => setLiked((prev) => !prev)}
+            onClick={() => {
+              const next = toggleFavorite(scheme.id, scheme.heading);
+              setLiked(next);
+            }}
             className="flex h-9 w-9 items-center justify-center rounded-full text-[#929292] transition-colors hover:bg-[#fff1f4] hover:text-[#ff385c]"
             title={language === "zh" ? "收藏" : "Favorite"}
           >
