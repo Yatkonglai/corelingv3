@@ -10,6 +10,7 @@ import { MODEL_PRESETS, DEFAULT_MODE } from "../lib/ai/config";
 import MessageBubble from "../components/MessageBubble";
 import HomeHero from "../components/HomeHero";
 import InputWorkbench from "../components/InputWorkbench";
+import ResultPane from "../components/ResultPane";
 import { parseCorelingMeta, parseResultViewModel } from "../lib/resultViewModel";
 import { v4 as uuidv4 } from "uuid";
 
@@ -382,41 +383,17 @@ export default function Home() {
               <div className="space-y-6">
                 {showResultPanel && latestResult && (
                   <div className="rounded-3xl border border-[#ebebeb] bg-white p-5 shadow-sm lg:hidden">
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <div>
-                        <h2 className="text-lg font-semibold text-[#222222]">
-                          {language === "zh" ? "本轮结果" : "Current result"}
-                        </h2>
-                        <p className="mt-1 text-sm text-[#6a6a6a]">
-                          {language === "zh"
-                            ? "先快速浏览方案，再选择生成效果图或继续深化。"
-                            : "Review the schemes first, then generate visuals or refine further."}
-                        </p>
-                      </div>
-                      <span className="rounded-full bg-[#fff1f4] px-3 py-1 text-xs font-medium text-[#ff385c]">
-                        {latestResult.schemes.length} {language === "zh" ? "个方案" : "schemes"}
-                      </span>
-                    </div>
-                    <div className="space-y-3">
-                      {latestResult.schemes.map((scheme) => (
-                        <div key={scheme.id} className="rounded-2xl border border-[#ebebeb] p-4">
-                          <div className="mb-2 flex items-start justify-between gap-3">
-                            <div>
-                              <p className="text-sm font-semibold text-[#222222]">{scheme.heading}</p>
-                              {scheme.title && <p className="text-sm text-[#6a6a6a]">{scheme.title}</p>}
-                            </div>
-                            <span className="rounded-full bg-[#f7f7f7] px-2.5 py-1 text-xs text-[#6a6a6a]">{scheme.id}</span>
-                          </div>
-                          <button
-                            onClick={() => handleGenerateImage(resultSourceText, scheme.heading, scheme.imagePrompt)}
-                            className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 py-2 text-xs font-medium text-[#ff385c] transition-colors hover:border-[#ff385c] hover:bg-[#fff8f6]"
-                          >
-                            <Sparkles size={14} />
-                            {language === "zh" ? "生成效果图" : "Generate visual"}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                    <ResultPane
+                      result={latestResult}
+                      language={language}
+                      sourceText={resultSourceText}
+                      onGenerateImage={handleGenerateImage}
+                      headerExtra={
+                        <span className="rounded-full bg-[#fff1f4] px-3 py-1 text-xs font-medium text-[#ff385c]">
+                          {latestResult.schemes.length} {language === "zh" ? "个方案" : "schemes"}
+                        </span>
+                      }
+                    />
                   </div>
                 )}
 
@@ -446,44 +423,12 @@ export default function Home() {
           <aside className="hidden lg:block">
             {showResultPanel && latestResult ? (
               <div className="sticky top-6 rounded-3xl border border-[#ebebeb] bg-white p-5 shadow-sm">
-                <div className="mb-4">
-                  <h2 className="text-lg font-semibold text-[#222222]">
-                    {language === "zh" ? "本轮结果" : "Current result"}
-                  </h2>
-                  <p className="mt-1 text-sm leading-6 text-[#6a6a6a]">
-                    {latestResult.introMarkdown ||
-                      (language === "zh"
-                        ? "已识别到结构化方案。先快速浏览，再决定要出图或继续深化哪个方向。"
-                        : "A structured result was detected. Review first, then decide which direction to visualize or refine.")}
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  {latestResult.schemes.map((scheme) => (
-                    <div key={scheme.id} className="rounded-2xl border border-[#ebebeb] p-4">
-                      <div className="mb-2 flex items-start justify-between gap-3">
-                        <div>
-                          <p className="text-sm font-semibold text-[#222222]">{scheme.heading}</p>
-                          {scheme.title && <p className="text-sm text-[#6a6a6a]">{scheme.title}</p>}
-                        </div>
-                        <span className="rounded-full bg-[#f7f7f7] px-2.5 py-1 text-xs text-[#6a6a6a]">{scheme.id}</span>
-                      </div>
-                      <button
-                        onClick={() => handleGenerateImage(resultSourceText, scheme.heading, scheme.imagePrompt)}
-                        className="inline-flex items-center gap-2 rounded-full border border-[#ebebeb] bg-white px-4 py-2 text-xs font-medium text-[#ff385c] transition-colors hover:border-[#ff385c] hover:bg-[#fff8f6]"
-                      >
-                        <Sparkles size={14} />
-                        {language === "zh" ? "生成效果图" : "Generate visual"}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 rounded-2xl bg-[#f7f7f7] px-4 py-3 text-xs leading-6 text-[#6a6a6a]">
-                  {language === "zh"
-                    ? "原始完整内容仍保留在对话区，当前侧栏只负责帮助你更快识别方案与下一步动作。"
-                    : "The full original content remains in the conversation area. This panel only helps you identify schemes and next actions faster."}
-                </div>
+                <ResultPane
+                  result={latestResult}
+                  language={language}
+                  sourceText={resultSourceText}
+                  onGenerateImage={handleGenerateImage}
+                />
               </div>
             ) : (
               <div className="sticky top-6 rounded-3xl border border-dashed border-[#d9d9d9] bg-white/70 p-5 text-sm leading-6 text-[#7a7a7a]">
