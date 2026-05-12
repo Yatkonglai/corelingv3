@@ -38,7 +38,7 @@ Use exactly this format:
    - **Archetype Verification**: The fused density archetype MUST match the Structural Lead's archetype
 3. **Structural Description** — The metal framework, silhouette, negative space strategy, line weights. **Reference the correct archetype's density range.**
 4. **Key Materials** — Gems (with specific ct limits), metals, techniques
-5. **Wearability Note** — Weight estimate, comfort considerations, balance
+5. **Wearability Profile** — After the scheme, append a dedicated Wearability Profile block (see Output Contract for format).
 6. **Competition Fit** — Which specific competition(s) does this scheme target? Reference the CRITERIA names (not just competition names) and explain which criteria the design scores highest on.
 
 **CRITICAL: Before presenting each scheme, run this archetype-aware self-check:**
@@ -127,7 +127,7 @@ After ALL visible content (schemes + comparison table), you MUST append a hidden
    - **原型验证**：融合后的密度原型必须与结构主导的原型一致
 3. **结构描述** — 金属框架、轮廓、负空间策略、线条粗细。**引用正确原型的密度范围。**
 4. **关键材质** — 宝石（带具体ct限制）、金属、工艺
-5. **佩戴性说明** — 重量估算、舒适度考量、平衡性
+5. **佩戴性档案** — 方案后附加独立的佩戴性档案区块（详见输出契约格式）。
 6. **竞赛契合度** — 此方案瞄准哪些具体竞赛？引用**标准名称**（而非仅竞赛名称）并解释设计在哪些标准上得分最高。
 
 **关键：在呈现每个方案前，运行此原型感知自检：**

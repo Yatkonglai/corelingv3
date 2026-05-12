@@ -45,16 +45,6 @@ High Jewelry must be believable. Never produce "fantasy jewelry" or "costume jew
      - Tapestry: metal is the hidden canvas
      - Monolithic: metal IS the sculpture
 
-### Wearability Standard
-Art Jewelry is NOT a stage prop. Every piece must be viable for production, sale, and comfortable wear.
-
-| Component | Max Spread | Center Stone | Max Weight | Density Guidance |
-|-----------|------------|--------------|------------|------------------|
-| Necklace  | ≤8cm       | ≤3ct         | ≤80g       | Follow fused archetype |
-| Earrings  | L≤5cm, W≤2.5cm | ≤1ct/ea  | ≤8g/ea     | Follow fused archetype |
-| Ring      | W≤2.5cm, H≤1.2cm | ≤2ct   | ≤15g       | Follow fused archetype |
-| Brooch    | ≤6cm       | ≤2.5ct       | ≤35g       | Follow fused archetype |
-
 **Gemstone Rules**:
 - Center stone must NOT exceed 25% of total visual weight.
 - Prefer scattered small stones (≤0.5ct) over single large stones.
@@ -87,16 +77,6 @@ const CONSTRAINTS_ZH = `## 设计约束
      - 建筑：金属是雕塑骨骼
      - 织锦：金属是隐藏画布
      - 巨石：金属就是雕塑
-
-### 佩戴性标准
-艺术珠宝不是舞台道具。每一件都必须适合生产、销售和舒适佩戴。
-
-| 部件 | 最大展开 | 主石 | 最大重量 | 密度指导 |
-|------|----------|------|----------|----------|
-| 项链 | ≤8cm | ≤3ct | ≤80g | 遵循融合的原型 |
-| 耳环 | 长≤5cm，宽≤2.5cm | ≤1ct/只 | ≤8g/只 | 遵循融合的原型 |
-| 戒指 | 宽≤2.5cm，高≤1.2cm | ≤2ct | ≤15g | 遵循融合的原型 |
-| 胸针 | ≤6cm | ≤2.5ct | ≤35g | 遵循融合的原型 |
 
 **宝石规则**：
 - 主石不得超过整体视觉重量的25%。

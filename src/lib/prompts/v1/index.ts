@@ -6,23 +6,25 @@ import { buildExamples } from './examples';
 import { buildContract } from './contracts';
 import { buildRealityConstraints } from './constraints';
 import { buildCompetitionCriteria } from './competitions';
+import { buildWearabilityPrompt } from './wearability';
 
 /**
  * GEMMA ARTISTE Prompt System
- * Version: 1.3.0
+ * Version: 1.4.0
  *
- * Added Master Density Archetypes in v1.3.0.
- * Replaced universal negative-space >= 50% with archetype-aware
- * density profiles (Lace/Architectural/Tapestry/Monolithic).
+ * Added Wearability Profile system in v1.4.0.
+ * Consolidated 4-tier field system with confidence grading
+ * and source attribution. Replaced fragmented wearability
+ * references with single source of truth.
  * Each module is a pure function. The assembler composes them
  * into the final system instruction based on conversation phase.
  */
 
 export const VERSION: PromptVersion = {
   major: 1,
-  minor: 3,
+  minor: 4,
   patch: 0,
-  label: 'master-density-archetypes',
+  label: 'wearability-profile',
 };
 
 export function getVersionString(): string {
@@ -42,6 +44,7 @@ const PHASE_MODULES: Record<ConversationPhase, {
   examples: boolean;
   contract: boolean;
   competitionCompressed: boolean;
+  wearability: boolean;
 }> = {
   consultation: {
     core: true,
@@ -52,6 +55,7 @@ const PHASE_MODULES: Record<ConversationPhase, {
     examples: false,         // skip examples during Q&A
     contract: false,         // skip contract during Q&A
     competitionCompressed: true,
+    wearability: false,      // skip during Q&A
   },
   'scheme-generation': {
     core: true,
@@ -62,6 +66,7 @@ const PHASE_MODULES: Record<ConversationPhase, {
     examples: true,
     contract: true,
     competitionCompressed: false,
+    wearability: true,       // mandatory for scheme generation
   },
   refinement: {
     core: false,             // skip identity re-introduction
@@ -72,6 +77,7 @@ const PHASE_MODULES: Record<ConversationPhase, {
     examples: false,
     contract: true,
     competitionCompressed: true,
+    wearability: true,       // keep for refinement corrections
   },
   'image-generation': {
     core: false,
@@ -82,6 +88,7 @@ const PHASE_MODULES: Record<ConversationPhase, {
     examples: false,
     contract: false,
     competitionCompressed: false,
+    wearability: false,      // not needed for image generation
   },
 };
 
@@ -124,6 +131,10 @@ export function buildSystemInstruction(
 
   if (modules.contract) {
     sections.push(buildContract(lang));
+  }
+
+  if (modules.wearability) {
+    sections.push(buildWearabilityPrompt(lang));
   }
 
   return sections.join('\n\n---\n\n');

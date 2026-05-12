@@ -29,6 +29,7 @@ const versionLoaders: Record<
   '1.1': buildV1, // v1.1 reality constraints (same entry, phase ignored = full)
   '1.2': buildV1, // v1.2 with phase-aware compression
   '1.3': buildV1, // v1.3 master density archetypes
+  '1.4': buildV1, // v1.4 wearability profile system
 };
 
 /**
@@ -76,6 +77,11 @@ export function getPromptVersionInfo(): Array<{
       version: '1.3',
       label: 'master-density-archetypes',
       description: 'Replaces universal negative-space rule with 4 archetype-aware density profiles (Lace/Architectural/Tapestry/Monolithic) matching 12 master designers.',
+    },
+    {
+      version: '1.4',
+      label: 'wearability-profile',
+      description: 'Adds 4-tier Wearability Profile with confidence grading, source attribution, and jewelry-type-specific rules. Consolidated single source of truth.',
     },
   ];
 }

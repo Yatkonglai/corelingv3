@@ -30,7 +30,77 @@ const EXAMPLES_EN: FewShotExample[] = [
 
 **Key Materials**: Platinum (structural vines), Burmese rubies (0.8-1.2mm pavé scattered along thorn tips — approximately 40 small stones, no single stone dominant), black rhodium accents on select thorn bases
 
-**Wearability Note**: Estimated 55g. Weight distributed across 5 collar anchor points. Inner surface hand-polished smooth. Suitable for 4+ hour wear. The open collar allows natural neck movement.
+## Wearability Profile
+
+### Core Layer (mandatory)
+
+1. **Type-Specific Stability Assessment**
+   - Value: Medium stability — open collar with 5 anchor points distributes weight; forward tilt risk mitigated by symmetric placement.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Explicit 5 anchor points; 7cm spread within necklace ≤8cm limit; tapering vines 2mm→0.4mm.
+
+2. **Wear Burden Level**
+   - Value: Medium
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Platinum structure + scattered rubies; multi-point distribution reduces pressure.
+
+3. **Recommended Scenarios**
+   - Value: Evening / Red Carpet
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: Striking collar presence; religious symbolism suits formal contexts.
+
+4. **Presence Level**
+   - Value: Striking
+   - Confidence: high
+   - Source: LLM-inference
+   - Rationale: 7cm spread + asymmetric thorns + dark rhodium contrast.
+
+### Extended Layer
+
+5. **Clothing Compatibility**
+   - Value: Requires structured neckline; fine chains may tangle with wire thorns.
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: 0.6mm wire thorns extend outward from collar structure.
+
+6. **Maintenance Sensitivity**
+   - Value: Black rhodium accents will wear with friction; annual re-plating recommended.
+   - Confidence: medium
+   - Source: rule-engine
+   - Rationale: Surface plating degrades with skin contact and abrasion.
+
+### Annotated Layer
+
+7. **Estimated Weight Range**
+   - Value: 45–60g
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: Platinum vines + 40 small rubies
+   - **Label: ESTIMATE — actual weight requires CAD or physical prototype**
+
+8. **Estimated Dimension Range**
+   - Value: 6.5–7.5cm spread
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: Described as 7cm collar with asymmetric extension
+   - **Label: ESTIMATE — actual dimensions require CAD or physical measurement**
+
+### Highlight Layer
+
+9. **Dynamic Noise Risk**
+   - Value: Silent
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Solid platinum structure with fixed pavé; no loose elements.
+
+10. **Thermal-Tactile Resonance**
+    - Value: Platinum cools on initial contact, warming to body temperature within 30 seconds. Polished inner rails feel smooth.
+    - Confidence: low (design inference)
+    - Source: design-intent
+    - Rationale: Platinum thermal conductivity + hand-polished inner surface.
 
 **Competition Fit**: Strong for GIT (narrative strength) and Couture (craftsmanship showcase). The religious symbolism may polarize AGTA Spectrum judges.
 
@@ -46,7 +116,71 @@ const EXAMPLES_EN: FewShotExample[] = [
 
 **Key Materials**: Platinum (chain and structure), Mozambique rubies (0.5-0.8mm scattered dewdrops, ~25 stones total), diamond micro-accents (0.2mm, ~10 stones)
 
-**Wearability Note**: Estimated 42g. Lariat form allows length adjustment. Thorns point outward, away from skin. Suitable for 6+ hour wear.
+## Wearability Profile
+
+### Core Layer (mandatory)
+
+1. **Type-Specific Stability Assessment**
+   - Value: High stability — lariat form self-adjusts to body; thorns point outward eliminating skin contact risk.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Lariat drop 24cm with adjustable length; thorns explicitly point away from skin; chain is flexible cable.
+
+2. **Wear Burden Level**
+   - Value: Light
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: 35–48g estimated; chain distributes weight along neckline; no rigid collar pressure points.
+
+3. **Recommended Scenarios**
+   - Value: Daily / Evening
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: Adjustable lariat suits varied contexts; rose motif has universal appeal.
+
+4. **Presence Level**
+   - Value: Moderate
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: 24cm drop creates vertical line; scattered dewdrops add subtle sparkle without dominance.
+
+### Extended Layer
+
+5. **Visual Coverage & Proportion**
+   - Value: 24cm vertical drop draws eye down neckline; proportionally elongates torso.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Explicit 24cm drop length within lariat norms.
+
+6. **Clothing Compatibility**
+   - Value: Versatile — suits both high and low necklines; avoid delicate knit fabrics.
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: Chain weight may snag loose knit; smooth cable generally fabric-friendly.
+
+### Annotated Layer
+
+7. **Estimated Weight Range**
+   - Value: 35–48g
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: Platinum cable chain + 25 rubies + 10 micro-diamonds
+   - **Label: ESTIMATE — actual weight requires CAD or physical prototype**
+
+8. **Estimated Dimension Range**
+   - Value: 22–26cm drop length
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: Described as 24cm lariat with organic briar clusters
+   - **Label: ESTIMATE — actual dimensions require CAD or physical measurement**
+
+### Highlight Layer
+
+9. **Kinetic-Spatial Feedback**
+   - Value: Lariat sways gently with body movement; briar clusters at the terminal point create a soft pendulum rhythm (~1.2s period).
+   - Confidence: low (design inference)
+   - Source: design-intent
+   - Rationale: 24cm drop + terminal cluster weight creates natural swing.
 
 **Competition Fit**: Strong across all competitions. The wearable-art positioning hits Saul Bell's sweet spot. Rose motif is universally appealing.
 
@@ -84,7 +218,77 @@ Platinum vine collar necklace with scattered ruby pavé thorn tips, Shaun Leane-
 
 **Key Materials**: Platinum (hidden structural base), Burmese rubies (0.8-1.2mm pavé, ~180 stones), Sri Lankan sapphires (0.8-1.2mm pavé, ~120 stones), diamond micro-accents (0.2mm, ~40 stones). No single stone exceeds 0.8mm — the design is about the FIELD, not individual gems.
 
-**Wearability Note**: Estimated 28g. The solid base provides comfortable weight distribution. Pin mechanism is a double-clutch for security. Suitable for 8+ hour wear. The flat profile (8mm max height) sits elegantly on fabric.
+## Wearability Profile
+
+### Core Layer (mandatory)
+
+1. **Type-Specific Stability Assessment**
+   - Value: High stability — solid platinum base with double-clutch pin; flat profile minimizes rotation risk.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Double-clutch pin explicitly described; 8mm max height within brooch limits; solid base prevents flex.
+
+2. **Wear Burden Level**
+   - Value: Medium
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Estimated 25–32g concentrated in 4.5x3.5cm area; flat profile distributes across fabric.
+
+3. **Recommended Scenarios**
+   - Value: Evening / Red Carpet
+   - Confidence: high
+   - Source: LLM-inference
+   - Rationale: JAR-style dense pavé is statement piece; 8+ hour comfort supports gala wear.
+
+4. **Presence Level**
+   - Value: Striking
+   - Confidence: high
+   - Source: LLM-inference
+   - Rationale: 4.5x3.5cm surface area with intense color gradient; ~8% negative space = maximal visual impact.
+
+### Extended Layer
+
+5. **Visual Coverage & Proportion**
+   - Value: 4.5x3.5cm occupies significant lapel/chest zone; reads as a color field rather than discrete object.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Dimensions explicitly stated; within brooch ≤6cm limit.
+
+6. **Clothing Compatibility**
+   - Value: Best on structured fabrics (wool, silk dupioni); avoid lightweight chiffon that may drape under weight.
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: 28g concentrated load requires fabric stiffness; flat profile helps but mass is significant.
+
+7. **Maintenance Sensitivity**
+   - Value: Micro-pavé requires professional cleaning; avoid ultrasonic which may loosen tiny stones.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: 300+ micro-stones (0.8mm) in invisible settings = high stone-loss risk if mishandled.
+
+### Annotated Layer
+
+8. **Estimated Weight Range**
+   - Value: 25–32g
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: Solid platinum base + ~300 micro-pavé stones
+   - **Label: ESTIMATE — actual weight requires CAD or physical prototype**
+
+9. **Estimated Dimension Range**
+   - Value: 4.0–5.0cm x 3.0–4.0cm
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: Described as 4.5cm x 3.5cm brooch with tapered edges
+   - **Label: ESTIMATE — actual dimensions require CAD or physical measurement**
+
+### Highlight Layer
+
+10. **Thermal-Tactile Resonance**
+    - Value: Platinum base remains cool against fabric; the dense pavé surface creates a smooth, glass-like thermal interface.
+    - Confidence: low (design inference)
+    - Source: design-intent
+    - Rationale: Platinum thermal mass + continuous gem surface minimizes thermal variation.
 
 **Competition Fit**: Exceptional for AGTA Spectrum (Gemstone Use 30% — the pavé gradient is a masterclass in color theory). Strong for Saul Bell (Technical Excellence 30% — invisible settings at this scale demand extraordinary craft).
 
@@ -117,7 +321,83 @@ Platinum vine collar necklace with scattered ruby pavé thorn tips, Shaun Leane-
 
 **Key Materials**: Platinum (near-invisible wire framework, 0.3-0.8mm), calibrated diamonds (0.5-1.0mm, ~80 stones tension-set at lattice nodes), no center stone — the FIELD of diamonds is the design. Imperial jade cabochon (8mm) as a single accent at the center node, held by tension.
 
-**Wearability Note**: Estimated 22g. Despite the visual delicacy, the mortise-and-tenon joints provide structural integrity. Inner surface has smooth platinum rails where the lattice contacts skin. Suitable for 4+ hour wear. The open lattice allows air circulation.
+## Wearability Profile
+
+### Core Layer (mandatory)
+
+1. **Type-Specific Stability Assessment**
+   - Value: Medium stability — tension-held lattice at 0.3mm wire is delicate; mortise-and-tenon joints at load nodes provide structural redundancy.
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: 0.3mm wires are extremely fine; mortise joints described but not engineered; 7cm spread within limit.
+
+2. **Wear Burden Level**
+   - Value: Light
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Estimated 18–26g; open lattice eliminates solid metal mass; tension settings minimize additional weight.
+
+3. **Recommended Scenarios**
+   - Value: Evening / Red Carpet
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: Imperial jali narrative suits formal contexts; 4+ hour comfort supports event wear.
+
+4. **Presence Level**
+   - Value: Striking
+   - Confidence: high
+   - Source: LLM-inference
+   - Rationale: 7cm collar spread with ~65% negative space creates dramatic silhouette; calibrated diamonds add brilliance.
+
+### Extended Layer
+
+5. **Visual Coverage & Proportion**
+   - Value: 7cm collar span frames décolletage; near-invisible metal makes gems appear to float.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Explicit 7cm spread; 65% negative space means visual boundary is gem-defined.
+
+6. **Clothing Compatibility**
+   - Value: Best with strapless or wide-neck garments; avoid high collars that compete for neckline space.
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: Collar piece needs exposed neck/chest to display full span.
+
+7. **Maintenance Sensitivity**
+   - Value: Extreme — 0.3mm wires vulnerable to impact; tension settings require specialist inspection.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Sub-millimeter platinum wires fatigue under stress; tension settings can loosen with wear.
+
+### Annotated Layer
+
+8. **Estimated Weight Range**
+   - Value: 18–26g
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: 0.3–0.8mm platinum wires + ~80 tension-set diamonds + single jade cabochon
+   - **Label: ESTIMATE — actual weight requires CAD or physical prototype**
+
+9. **Estimated Dimension Range**
+   - Value: 6.5–7.5cm spread
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: Described as 7cm lattice spanning collarbone
+   - **Label: ESTIMATE — actual dimensions require CAD or physical measurement**
+
+### Highlight Layer
+
+10. **Dynamic Noise Risk**
+    - Value: Silent
+    - Confidence: high
+    - Source: rule-engine
+    - Rationale: Fixed tension-set lattice; no dangling or articulated elements.
+
+11. **Thermal Seasonal Bias**
+    - Value: Platinum remains cool year-round; the open lattice allows air circulation, making it comfortable even in warm weather.
+    - Confidence: low (design inference)
+    - Source: design-intent
+    - Rationale: Low thermal mass per contact point + 65% negative space = minimal heat retention.
 
 **Competition Fit**: Strong for Couture (craftsmanship showcase — tension-setting at this scale demands extraordinary skill). Niche for AGTA Spectrum (no single large stone to showcase). The jali heritage narrative resonates with GIT judges.
 
@@ -148,7 +428,77 @@ Platinum vine collar necklace with scattered ruby pavé thorn tips, Shaun Leane-
 
 **Key Materials**: 18K yellow gold (solid forged band, hand-hammered texture), raw aquamarine crystal (~1.5ct, uncut, natural inclusion visible), no additional gemstones — the raw crystal and the gold texture ARE the design.
 
-**Wearability Note**: Estimated 18g. The ergonomic taper ensures comfort despite substantial mass. Inner surface is hand-polished smooth. Suitable for 6+ hour wear. The raw crystal's irregular shape means each piece is unique.
+## Wearability Profile
+
+### Core Layer (mandatory)
+
+1. **Type-Specific Stability Assessment**
+   - Value: High stability — ergonomic taper (8mm→12mm) prevents adjacent finger compression; bezel setting eliminates snag risk.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Explicit ergonomic taper; bezel surrounds raw crystal; band width 2.5cm within ring limit.
+
+2. **Wear Burden Level**
+   - Value: Medium
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Estimated 15–22g; substantial mass concentrated in ring zone but ergonomic taper distributes pressure.
+
+3. **Recommended Scenarios**
+   - Value: Daily / Evening
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: 6+ hour comfort supports daily wear; Brutist aesthetic suits creative professional contexts.
+
+4. **Presence Level**
+   - Value: Moderate
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: 12mm face width is statement-scale for a ring but monolithic form reads as grounded rather than flashy.
+
+### Extended Layer
+
+5. **Visual Coverage & Proportion**
+   - Value: 12mm face width occupies significant finger real estate; bezel height creates vertical presence.
+   - Confidence: high
+   - Source: rule-engine
+   - Rationale: Explicit 8mm→12mm taper; within ring width ≤2.5cm limit.
+
+6. **Maintenance Sensitivity**
+   - Value: Hammered texture hides minor scratches; raw crystal needs gentle cleaning (no ultrasonic).
+   - Confidence: medium
+   - Source: LLM-inference
+   - Rationale: Intentional texture = self-healing aesthetic; raw crystal has natural fractures vulnerable to shock.
+
+### Annotated Layer
+
+7. **Estimated Weight Range**
+   - Value: 15–22g
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: Solid 18K gold band (8mm→12mm) + ~1.5ct raw crystal in heavy bezel
+   - **Label: ESTIMATE — actual weight requires CAD or physical prototype**
+
+8. **Estimated Dimension Range**
+   - Value: Band 7–9mm base, 11–13mm face; crystal ~8–12mm irregular
+   - Confidence: low (estimate)
+   - Source: LLM-inference
+   - Rationale: Described as 8mm→12mm taper with ~1.5ct raw crystal
+   - **Label: ESTIMATE — actual dimensions require CAD or physical measurement**
+
+### Highlight Layer
+
+9. **Thermal-Tactile Resonance**
+   - Value: 18K gold feels warm on contact and retains body heat. The hammered surface creates micro-air pockets that reduce skin adhesion.
+   - Confidence: low (design inference)
+   - Source: design-intent
+   - Rationale: Gold thermal properties + hand-hammered texture = warm, tactile experience.
+
+10. **Kinetic-Spatial Feedback**
+    - Value: Ring is static on finger; the substantial mass provides a reassuring "grounding" sensation during hand gestures.
+    - Confidence: low (design inference)
+    - Source: design-intent
+    - Rationale: Solid monolithic form + 15–22g mass = minimal movement, maximum tactile presence.
 
 **Competition Fit**: Strong for Saul Bell (Technical Excellence 30% — the hand-forged texture and bezel setting on raw crystal demand extraordinary skill). Niche for AGTA Spectrum (the raw crystal may polarize judges who prefer cut stones).
 
@@ -191,7 +541,77 @@ const EXAMPLES_ZH: FewShotExample[] = [
 
 **关键材质**：铂金（结构藤蔓），缅甸红宝石（0.8-1.2mm散点密镶于荆棘尖端——约40颗小石，无单颗主导石），黑色铑金点缀于精选荆棘基部
 
-**佩戴性说明**：估算55g。重量分布在5个领圈锚点。内侧表面手工抛光光滑。适合4小时以上佩戴。开放式领圈允许颈部自然活动。
+## 佩戴性档案
+
+### 核心层（强制）
+
+1. **类型专属稳定性评估**
+   - 值：中等稳定性——开放式领圈配5个锚点分散重量；对称锚点布置缓解前倾风险。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：明确描述5个锚点；7cm展开宽度在项链≤8cm限制内；藤蔓从2mm渐变至0.4mm。
+
+2. **佩戴负担等级**
+   - 值：中
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：铂金结构+散点红宝石；多点分布降低单点压强。
+
+3. **推荐场景**
+   - 值：晚宴 / 红毯
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：醒目领圈存在感+宗教象征适合正式场合。
+
+4. **存在感等级**
+   - 值：醒目
+   - 置信度：高
+   - 来源：LLM推断
+   - 依据：7cm展开+不对称荆棘轮廓+黑铑对比。
+
+### 扩展层
+
+5. **服装兼容性**
+   - 值：需搭配硬挺领口；避免细链与金属线荆棘缠绕。
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：0.6mm金属线荆棘从领圈向外延伸。
+
+6. **保养敏感度**
+   - 值：黑铑点缀会因摩擦磨损；建议每年检查补镀。
+   - 置信度：中
+   - 来源：规则引擎
+   - 依据：表面镀层随皮肤接触和磨损逐渐退化。
+
+### 标注层
+
+7. **估算重量区间**
+   - 值：45–60g
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：铂金藤蔓+40颗小红宝石
+   - **标注：估算——实际重量需CAD或实物原型确认**
+
+8. **估算尺寸范围**
+   - 值：6.5–7.5cm 展开
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：描述为7cm不对称领圈
+   - **标注：估算——实际尺寸需CAD或实物测量确认**
+
+### 亮点层
+
+9. **动态噪音风险**
+   - 值：静音
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：实心铂金结构配固定密镶；无松散元素。
+
+10. **触觉温感响应**
+    - 值：铂金初触清凉，30秒内过渡至体温中性。抛光内侧导轨触感顺滑。
+    - 置信度：低（设计推断）
+    - 来源：设计意图
+    - 依据：铂金导热性+手工抛光内侧表面。
 
 **竞赛契合度**：GIT（叙事力度强）和 Couture（工艺展示）表现强劲。宗教象征意义可能让 AGTA Spectrum 评委产生分歧。
 
@@ -207,7 +627,71 @@ const EXAMPLES_ZH: FewShotExample[] = [
 
 **关键材质**：铂金（链条和结构），莫桑比克红宝石（0.5-0.8mm散落露珠，约25颗），钻石微点缀（0.2mm，约10颗）
 
-**佩戴性说明**：估算42g。Lariat 形式允许长度调节。荆棘朝外，远离肌肤。适合6小时以上佩戴。
+## 佩戴性档案
+
+### 核心层（强制）
+
+1. **类型专属稳定性评估**
+   - 值：高稳定性——lariat 形式可自适应调节；荆棘明确朝外，消除肌肤接触风险。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：24cm下垂长度可调节；荆棘明确远离肌肤；链条为柔性索链。
+
+2. **佩戴负担等级**
+   - 值：轻
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：估算35–48g；链条沿颈线分布重量；无刚性领圈压点。
+
+3. **推荐场景**
+   - 值：日常 / 晚宴
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：可调节lariat适应多种场合；玫瑰主题具有普遍吸引力。
+
+4. **存在感等级**
+   - 值：适中
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：24cm下垂营造纵向线条；散落露珠增添微妙闪光而不主导。
+
+### 扩展层
+
+5. **视觉覆盖度与比例**
+   - 值：24cm纵向下垂吸引视线沿领口下移；视觉上拉长 torso 比例。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：明确24cm下垂长度，在lariat标准范围内。
+
+6. **服装兼容性**
+   - 值：百搭——适合高领和低领；避免易钩挂的松散针织面料。
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：链条重量可能钩挂松散针织；光滑索链通常面料友好。
+
+### 标注层
+
+7. **估算重量区间**
+   - 值：35–48g
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：铂金索链+25颗红宝石+10颗微钻石
+   - **标注：估算——实际重量需CAD或实物原型确认**
+
+8. **估算尺寸范围**
+   - 值：22–26cm 下垂长度
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：描述为24cm lariat配有机荆棘簇
+   - **标注：估算——实际尺寸需CAD或实物测量确认**
+
+### 亮点层
+
+9. **空间动力学反馈**
+   - 值：lariat 随身体自然摆动；末端荆棘簇形成柔和钟摆节奏（约1.2秒周期）。
+   - 置信度：低（设计推断）
+   - 来源：设计意图
+   - 依据：24cm下垂+末端簇重量形成自然摆动。
 
 **竞赛契合度**：在所有竞赛中表现强劲。可穿戴艺术定位击中 Saul Bell 的甜蜜点。玫瑰主题具有普遍吸引力。
 
@@ -245,7 +729,77 @@ const EXAMPLES_ZH: FewShotExample[] = [
 
 **关键材质**：铂金（隐藏结构底座），缅甸红宝石（0.8-1.2mm密镶，~180颗），斯里兰卡蓝宝石（0.8-1.2mm密镶，~120颗），钻石微点缀（0.2mm，~40颗）。没有单颗石超过0.8mm——设计关乎 FIELD，而非个体宝石。
 
-**佩戴性说明**：估算28g。实心底座提供舒适的重量分布。别针机制是双扣式以确保安全。适合8小时以上佩戴。扁平轮廓（最大高度8mm）优雅地贴合面料。
+## 佩戴性档案
+
+### 核心层（强制）
+
+1. **类型专属稳定性评估**
+   - 值：高稳定性——实心铂金底座配双扣别针；扁平轮廓最小化旋转风险。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：明确描述双扣别针；8mm最大高度在胸针限制内；实心底座防止弯曲。
+
+2. **佩戴负担等级**
+   - 值：中
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：估算25–32g集中于4.5x3.5cm区域；扁平轮廓分散于面料。
+
+3. **推荐场景**
+   - 值：晚宴 / 红毯
+   - 置信度：高
+   - 来源：LLM推断
+   - 依据：JAR风格密集密镶为宣言作品；8小时以上舒适适合 gala 佩戴。
+
+4. **存在感等级**
+   - 值：醒目
+   - 置信度：高
+   - 来源：LLM推断
+   - 依据：4.5x3.5cm表面积配强烈色彩渐变；约8%负空间=最大视觉冲击。
+
+### 扩展层
+
+5. **视觉覆盖度与比例**
+   - 值：4.5x3.5cm占据显著翻领/胸部区域；呈现为色彩场而非离散物体。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：尺寸明确说明；在胸针≤6cm限制内。
+
+6. **服装兼容性**
+   - 值：最适合硬挺面料（羊毛、真丝双宫绸）；避免轻质雪纺因重量下垂。
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：28g集中负载需要面料刚度；扁平轮廓有帮助但质量显著。
+
+7. **保养敏感度**
+   - 值：微镶需专业清洁；避免超声波清洗以防松动小石。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：300+微石（0.8mm）隐形镶嵌=操作不当有极高掉石风险。
+
+### 标注层
+
+8. **估算重量区间**
+   - 值：25–32g
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：实心铂金底座+约300颗微密镶石
+   - **标注：估算——实际重量需CAD或实物原型确认**
+
+9. **估算尺寸范围**
+   - 值：4.0–5.0cm x 3.0–4.0cm
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：描述为4.5cm x 3.5cm胸针，边缘渐细
+   - **标注：估算——实际尺寸需CAD或实物测量确认**
+
+### 亮点层
+
+10. **触觉温感响应**
+    - 值：铂金底座保持面料清凉；密集密镶表面形成光滑玻璃质感热界面。
+    - 置信度：低（设计推断）
+    - 来源：设计意图
+    - 依据：铂金热质量+连续宝石表面最小化温度变化。
 
 **竞赛契合度**：AGTA Spectrum 表现卓越（宝石运用 30%——密镶渐变是色彩理论的 masterclass）。Saul Bell 表现强劲（技术卓越 30%——此规模的隐形镶嵌需要非凡工艺）。
 
@@ -278,7 +832,83 @@ const EXAMPLES_ZH: FewShotExample[] = [
 
 **关键材质**：铂金（近不可见丝线框架，0.3-0.8mm），校准钻石（0.5-1.0mm，~80 颗张力固定于格窗节点），无中心石——钻石 FIELD 就是设计本身。帝王翡翠蛋面（8mm）作为中心节点的单一点缀，张力固定。
 
-**佩戴性说明**：估算 22g。尽管视觉上精致，榫卯关节提供结构完整性。内侧表面有光滑铂金导轨，格窗接触肌肤处。适合 4 小时以上佩戴。开放式格窗允许空气流通。
+## 佩戴性档案
+
+### 核心层（强制）
+
+1. **类型专属稳定性评估**
+   - 值：中等稳定性——0.3mm金属线上张力固定格窗极精致；承重节点榫卯关节提供结构冗余。
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：0.3mm金属线极细；榫卯关节有描述但未工程验证；7cm展开在限制内。
+
+2. **佩戴负担等级**
+   - 值：轻
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：估算18–26g；开放式格窗消除实心金属质量；张力镶嵌最小化额外重量。
+
+3. **推荐场景**
+   - 值：晚宴 / 红毯
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：帝国jali叙事适合正式场合；4小时以上舒适支持活动佩戴。
+
+4. **存在感等级**
+   - 值：醒目
+   - 置信度：高
+   - 来源：LLM推断
+   - 依据：7cm领圈展开配约65%负空间营造戏剧化轮廓；校准钻石增添璀璨。
+
+### 扩展层
+
+5. **视觉覆盖度与比例**
+   - 值：7cm领圈跨度框住胸口；近不可见金属使宝石仿佛悬浮。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：明确7cm展开；65%负空间意味着视觉边界由宝石定义。
+
+6. **服装兼容性**
+   - 值：最适合抹胸或宽领服装；避免高领与领圈争夺领口空间。
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：领圈作品需要暴露颈/胸以展示完整跨度。
+
+7. **保养敏感度**
+   - 值：极高——0.3mm金属线易受冲击；张力镶嵌需专业检查。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：亚毫米铂金丝线在应力下疲劳；张力镶嵌可能随佩戴松动。
+
+### 标注层
+
+8. **估算重量区间**
+   - 值：18–26g
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：0.3–0.8mm铂金丝线+约80颗张力固定钻石+单颗翡翠蛋面
+   - **标注：估算——实际重量需CAD或实物原型确认**
+
+9. **估算尺寸范围**
+   - 值：6.5–7.5cm 展开
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：描述为7cm横跨锁骨的格窗
+   - **标注：估算——实际尺寸需CAD或实物测量确认**
+
+### 亮点层
+
+10. **动态噪音风险**
+    - 值：静音
+    - 置信度：高
+    - 来源：规则引擎
+    - 依据：固定张力固定格窗；无悬挂或关节元素。
+
+11. **热感季节倾向**
+    - 值：铂金全年保持清凉；开放式格窗允许空气流通，即使温暖天气也舒适。
+    - 置信度：低（设计推断）
+    - 来源：设计意图
+    - 依据：单点接触热质量低+65%负空间=最小热滞留。
 
 **竞赛契合度**：Couture 表现强劲（工艺展示——此规模张力固定需要非凡技艺）。AGTA Spectrum 小众（无单颗大宝石可展示）。Jali heritage 叙事与 GIT 评委产生共鸣。
 
@@ -309,7 +939,77 @@ const EXAMPLES_ZH: FewShotExample[] = [
 
 **关键材质**：18K黄金（实心锻造戒圈，手工锤打纹理），原海蓝宝石水晶（~1.5ct，未切割，天然内含物可见），无额外宝石——原水晶和黄金纹理就是设计本身。
 
-**佩戴性说明**：估算18g。人体工学渐宽确保尽管有分量仍然舒适。内侧表面手工抛光光滑。适合6小时以上佩戴。原水晶的不规则形状意味着每件作品都是独一无二的。
+## 佩戴性档案
+
+### 核心层（强制）
+
+1. **类型专属稳定性评估**
+   - 值：高稳定性——人体工学渐宽（8mm→12mm）防止相邻手指压迫；包镶消除勾挂风险。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：明确人体工学渐宽；包镶包围原水晶；戒圈宽度2.5cm在戒指限制内。
+
+2. **佩戴负担等级**
+   - 值：中
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：估算15–22g；戒指区域集中 substantial 质量但人体工学渐宽分散压力。
+
+3. **推荐场景**
+   - 值：日常 / 晚宴
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：6小时以上舒适支持日常佩戴；粗野主义美学适合创意职业场合。
+
+4. **存在感等级**
+   - 值：适中
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：12mm面部宽度对戒指为宣言级但巨石形态显得沉稳而非浮夸。
+
+### 扩展层
+
+5. **视觉覆盖度与比例**
+   - 值：12mm面部宽度占据显著手指空间；包镶高度创造垂直存在感。
+   - 置信度：高
+   - 来源：规则引擎
+   - 依据：明确8mm→12mm渐宽；在戒指宽度≤2.5cm限制内。
+
+6. **保养敏感度**
+   - 值：锤击纹理隐藏轻微划痕；原水晶需轻柔清洁（勿超声波）。
+   - 置信度：中
+   - 来源：LLM推断
+   - 依据：故意纹理=自愈美学；原水晶有天然裂隙易受冲击。
+
+### 标注层
+
+7. **估算重量区间**
+   - 值：15–22g
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：实心18K金戒圈（8mm→12mm）+约1.5ct原水晶配厚重包镶
+   - **标注：估算——实际重量需CAD或实物原型确认**
+
+8. **估算尺寸范围**
+   - 值：戒圈底部7–9mm，面部11–13mm；水晶约8–12mm不规则
+   - 置信度：低（估算）
+   - 来源：LLM推断
+   - 依据：描述为8mm→12mm渐宽配约1.5ct原水晶
+   - **标注：估算——实际尺寸需CAD或实物测量确认**
+
+### 亮点层
+
+9. **触觉温感响应**
+   - 值：18K黄金触感温润并保留体温。锤击表面创造微气穴减少皮肤粘附。
+   - 置信度：低（设计推断）
+   - 来源：设计意图
+   - 依据：黄金热学属性+手工锤击纹理=温暖触觉体验。
+
+10. **空间动力学反馈**
+    - 值：戒指在手指上静止； substantial 质量在手势间提供安心的" grounding "感受。
+    - 置信度：低（设计推断）
+    - 来源：设计意图
+    - 依据：实心巨石形态+15–22g质量=最小移动，最大触觉存在。
 
 **竞赛契合度**：Saul Bell 表现强劲（技术卓越 30%——手工锻造纹理和原水晶包镶需要非凡技艺）。AGTA Spectrum 小众（原水晶可能让偏好切割宝石的评委产生分歧）。
 
