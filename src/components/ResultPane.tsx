@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ParsedResultViewModel } from "../lib/resultViewModel";
 import SchemeCard from "./SchemeCard";
 
@@ -85,12 +87,23 @@ export default function ResultPane({ result, language, sourceText, onGenerateIma
             {language === "zh" ? "方案对比" : "Scheme Comparison"}
           </h3>
           <div className="rounded-xl bg-[#fafafa] p-3 text-[13px] leading-relaxed text-[#444444] overflow-x-auto">
-            {/* Comparison table would be rendered here if needed */}
-            <p className="text-xs text-[#929292]">
-              {language === "zh"
-                ? "对比表格内容请见对话区原始输出。"
-                : "See the conversation area for the full comparison table."}
-            </p>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                table: ({ node, ...props }) => (
+                  <div className="overflow-x-auto my-2 rounded-lg border border-[#ebebeb]">
+                    <table className="min-w-full text-left text-xs border-collapse" {...props} />
+                  </div>
+                ),
+                thead: ({ node, ...props }) => <thead className="bg-[#f0f0f0] text-[#222222] font-semibold" {...props} />,
+                tbody: ({ node, ...props }) => <tbody className="bg-white divide-y divide-[#ebebeb]" {...props} />,
+                tr: ({ node, ...props }) => <tr className="hover:bg-[#f7f7f7] transition-colors" {...props} />,
+                th: ({ node, ...props }) => <th className="p-2 border-r border-[#ebebeb] last:border-r-0 whitespace-nowrap" {...props} />,
+                td: ({ node, ...props }) => <td className="p-2 border-r border-[#ebebeb] last:border-r-0 align-top" {...props} />,
+              }}
+            >
+              {result.comparisonTableMarkdown}
+            </ReactMarkdown>
           </div>
         </div>
       )}

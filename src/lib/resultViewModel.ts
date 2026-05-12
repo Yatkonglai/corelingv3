@@ -75,7 +75,7 @@ export function parseResultViewModel(message: Message): ParsedResultViewModel {
 
   const introMarkdown = contentBeforeTable.slice(0, matches[0].index).trim() || undefined;
   const schemes: ParsedSchemeSection[] = matches.map((match, index) => {
-    const fullHeading = match[1].trim();
+    const fullHeading = match[1].trim().replace(/^###\s*/, "");
     const id = normalizeSchemeId(match[2]);
     const title = match[3]?.trim();
     const start = match.index ?? 0;
